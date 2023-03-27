@@ -8,6 +8,7 @@ import { PropertyAdsModule } from './modules/property-ads/property-ads.module';
 import { CustomerModule } from './modules/customer/customer.module';
 import { ConfigModule } from '@nestjs/config';
 
+
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),

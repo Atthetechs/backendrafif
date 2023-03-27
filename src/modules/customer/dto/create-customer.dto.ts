@@ -5,12 +5,27 @@ export class CreateCustomerDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  property_Id: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
   firstname: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
   lastname: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  nationality_id: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  country: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -27,7 +42,11 @@ export class CreateCustomerDto {
   @IsString()
   email: string;
 
-  @ApiProperty()
-  @IsObject()
-  image?: object;
+  @ApiProperty({
+    isArray: true,
+    type: 'string',
+    format: 'binary',
+    description: 'Image file to upload',
+  })
+  images: string;
 }

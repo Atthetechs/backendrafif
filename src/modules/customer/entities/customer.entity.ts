@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { PropertyAds } from 'src/modules/property-ads/entities/property-ads.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Customers {
@@ -12,6 +13,12 @@ export class Customers {
   lastname: string;
 
   @Column()
+  nationality_id: string;
+
+  @Column()
+  country: string;
+
+  @Column()
   gender: string;
 
   @Column()
@@ -20,6 +27,9 @@ export class Customers {
   @Column()
   email: string;
 
-  @Column({ nullable: true })
-  imageid: string;
+  @Column({ type: 'text', array: true, nullable: true })
+  images: string[];
+
+  @ManyToOne(() => PropertyAds, (property) => property.customers)
+  propertyAds: PropertyAds;
 }

@@ -15,7 +15,7 @@ export class User {
   @Column()
   username: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
@@ -25,7 +25,6 @@ export class User {
   phoneNumber: string;
 
   @OneToMany(() => PropertyAds, (property) => property.user, {
-    eager: true,
     onDelete: 'CASCADE',
   })
   propertyAds: PropertyAds[];

@@ -2,36 +2,38 @@ import {
   Body,
   Controller,
   Post,
-  UploadedFile,
+  UploadedFiles,
+  UseGuards,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags } from '@nestjs/swagger';
-import { diskStorage } from 'multer';
+import {
+  FileFieldsInterceptor,
+} from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 
 @ApiTags('Customer')
+@ApiBearerAuth()
 @Controller('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post('create')
-  @UseInterceptors(
-    FileInterceptor('images', {
-      storage: diskStorage({
-        destination: './public',
-      }),
-    }),
-  )
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'images' }]))
   @UsePipes(new ValidationPipe({ transform: true }))
   createCustomer(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() files: Array<Express.Multer.File>,
     @Body() customerDto: CreateCustomerDto,
   ) {
+    const alldata = JSON.parse(JSON.stringify(files));
     const data = JSON.parse(JSON.stringify(customerDto));
-    return this.customerService.create(data, file);
+    const { images } = alldata;
+    return this.customerService.create(data, images);
   }
 }

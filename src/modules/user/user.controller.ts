@@ -2,19 +2,19 @@ import {
   Body,
   Controller,
   Get,
-  Header,
+  Param,
   Post,
   Req,
-  Response,
+  Res,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 import { AuthService } from '../auth/auth.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
-import { CreatePropertyDto } from './dto/create-property-ads.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-dto';
 import { UserService } from './user.service';
@@ -46,8 +46,18 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('submit-ads')
-  ads(@Body() propertyDto: CreatePropertyDto, @Req() req) {
-    return this.userService.createAds(propertyDto, req.user);
+  @Get('getUser')
+  async getUser(@Req() req) {
+    return await this.userService.finduser(req.user);
+  }
+
+  @Get('contractFile/:id')
+  runContract(@Param('id') id: any, @Res() res: Response) {
+    return this.userService.contract(id, res);
+  }
+
+  @Get('images/:id')
+  getImages(@Param('id') id: any, @Res() res) {
+    return this.userService.getOne(id, res);
   }
 }
