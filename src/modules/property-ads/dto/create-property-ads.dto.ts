@@ -1,5 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsNumberString,
+  IsString,
+  Max,
+  Min,
+  MinLength,
+} from 'class-validator';
 
 export class CreatePropertyDto {
   @ApiProperty()
@@ -53,7 +62,36 @@ export class CreatePropertyDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  price: string;
+  block_No: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  plot_No: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  building_No: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  street_No: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  town: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  price: number;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  grace_days?: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -64,6 +102,7 @@ export class CreatePropertyDto {
   @IsNotEmpty()
   @IsString()
   created_at: string;
+  
 
   @ApiProperty({
     isArray: true,

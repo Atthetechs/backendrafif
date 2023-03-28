@@ -47,6 +47,10 @@ __decorate([
     __metadata("design:type", String)
 ], Customers.prototype, "email", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Customers.prototype, "profile_img", void 0);
+__decorate([
     (0, typeorm_1.Column)({ type: 'text', array: true, nullable: true }),
     __metadata("design:type", Array)
 ], Customers.prototype, "images", void 0);

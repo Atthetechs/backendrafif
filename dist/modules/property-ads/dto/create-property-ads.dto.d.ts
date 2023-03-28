@@ -9,7 +9,13 @@ export declare class CreatePropertyDto {
     propertytype: string;
     area: string;
     address: string;
-    price: string;
+    block_No: string;
+    plot_No: string;
+    building_No: string;
+    street_No: string;
+    town: string;
+    price: number;
+    grace_days?: string;
     status: string;
     created_at: string;
     images: string;

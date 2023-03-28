@@ -64,6 +64,14 @@ __decorate([
 ], CreateCustomerDto.prototype, "email", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
+        type: 'string',
+        format: 'binary',
+        description: 'Profile Image to upload',
+    }),
+    __metadata("design:type", String)
+], CreateCustomerDto.prototype, "profile_img", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
         isArray: true,
         type: 'string',
         format: 'binary',

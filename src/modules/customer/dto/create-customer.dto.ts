@@ -43,6 +43,13 @@ export class CreateCustomerDto {
   email: string;
 
   @ApiProperty({
+    type: 'string',
+    format: 'binary',
+    description: 'Profile Image to upload',
+  })
+  profile_img: string;
+
+  @ApiProperty({
     isArray: true,
     type: 'string',
     format: 'binary',

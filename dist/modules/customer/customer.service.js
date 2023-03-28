@@ -36,17 +36,21 @@ let CustomerService = class CustomerService {
         this.propertyAd = propertyAd;
         this.bucket = bucket;
     }
-    async create(data, file) {
+    async create(data, file, profile_img) {
         try {
             const { property_Id } = data, result = __rest(data, ["property_Id"]);
             const propertyAd = await this.propertyAd.findOne({
                 where: { id: property_Id },
             });
             if (propertyAd) {
-                let response = file.length ? await this.bucket.upload(file) : [];
+                const response = file.length ? await this.bucket.upload(file) : [];
+                const profilepic = profile_img.length
+                    ? await this.bucket.singleImageUpload(profile_img[0])
+                    : null;
                 const res = new customer_entity_1.Customers();
                 Object.keys(result).forEach((key) => {
                     res[`${key}`] = result[`${key}`];
+                    res.profile_img = profilepic;
                     res.images = response;
                     res.propertyAds = propertyAd;
                 });

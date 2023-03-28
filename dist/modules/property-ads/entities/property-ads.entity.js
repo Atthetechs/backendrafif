@@ -62,7 +62,31 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
+], PropertyAds.prototype, "block_No", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], PropertyAds.prototype, "plot_No", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], PropertyAds.prototype, "building_No", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], PropertyAds.prototype, "street_No", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], PropertyAds.prototype, "town", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'float' }),
+    __metadata("design:type", Number)
 ], PropertyAds.prototype, "price", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], PropertyAds.prototype, "grace_days", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)

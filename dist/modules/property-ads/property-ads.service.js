@@ -30,7 +30,8 @@ let PropertyAdsService = class PropertyAdsService {
                 : [];
             const data = new property_ads_entity_1.PropertyAds();
             Object.keys(dataa).forEach((key) => {
-                data[`${key}`] = dataa[`${key}`];
+                data[`${key}`] =
+                    key == 'price' ? parseInt(dataa[`${key}`]) / 12 : dataa[`${key}`];
                 data.images = response;
                 data.user = user;
             });

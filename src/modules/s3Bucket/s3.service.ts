@@ -33,22 +33,32 @@ export class S3ImageUpload {
       } else {
         return pictures;
       }
-      // const fileStream = createReadStream(data.path);
-
-      // const uploadParams = {
-      //   Bucket: process.env.AWS_BUCKET_NAME,
-      //   Body: fileStream,
-      //   Key: data.filename,
-      // };
-
-      // let respo = await this.s3.upload(uploadParams).promise();
-      // if (respo.Key) {
-      //   return respo.Key;
-      // } else {
-      //   throw new HttpException('Image Not Save', HttpStatus.BAD_REQUEST);
-      // }
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async singleImageUpload(data: any) {
+    try {
+      const fileStream = createReadStream(data.path);
+
+      const uploadParams = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Body: fileStream,
+        Key: data.filename,
+      };
+
+      const respo = await this.s3.upload(uploadParams).promise();
+      if (respo.Key) {
+        return respo.Key;
+      } else {
+        throw new HttpException(
+          'Profile Image Not Save',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    } catch (err) {
+      console.log(err);
     }
   }
 

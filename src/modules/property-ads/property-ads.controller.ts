@@ -31,9 +31,13 @@ export class PropertyAdsController {
     @Body() propertyDto: CreatePropertyDto,
     @Req() req,
   ) {
+    // const dataa = JSON.parse(JSON.stringify(propertyDto));
     const allImages = JSON.parse(JSON.stringify(files));
-    const dataa = JSON.parse(JSON.stringify(propertyDto));
     const { images } = allImages;
-    return await this.propertyService.createProperty(dataa, images, req.user);
+    return await this.propertyService.createProperty(
+      propertyDto,
+      images,
+      req.user,
+    );
   }
 }

@@ -46,6 +46,26 @@ let S3ImageUpload = class S3ImageUpload {
             throw new common_1.HttpException(err.message, common_1.HttpStatus.BAD_REQUEST);
         }
     }
+    async singleImageUpload(data) {
+        try {
+            const fileStream = (0, fs_1.createReadStream)(data.path);
+            const uploadParams = {
+                Bucket: process.env.AWS_BUCKET_NAME,
+                Body: fileStream,
+                Key: data.filename,
+            };
+            const respo = await this.s3.upload(uploadParams).promise();
+            if (respo.Key) {
+                return respo.Key;
+            }
+            else {
+                throw new common_1.HttpException('Profile Image Not Save', common_1.HttpStatus.BAD_REQUEST);
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
     async getUploadedFile(id) {
         const downloadParams = {
             Key: id,

@@ -8,6 +8,7 @@ export declare class Customers {
     gender: string;
     phoneNumber: string;
     email: string;
+    profile_img: string;
     images: string[];
     propertyAds: PropertyAds;
 }

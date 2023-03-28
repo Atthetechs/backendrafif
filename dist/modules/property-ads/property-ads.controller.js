@@ -25,9 +25,8 @@ let PropertyAdsController = class PropertyAdsController {
     }
     async property(files, propertyDto, req) {
         const allImages = JSON.parse(JSON.stringify(files));
-        const dataa = JSON.parse(JSON.stringify(propertyDto));
         const { images } = allImages;
-        return await this.propertyService.createProperty(dataa, images, req.user);
+        return await this.propertyService.createProperty(propertyDto, images, req.user);
     }
 };
 __decorate([

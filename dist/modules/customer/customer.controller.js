@@ -26,15 +26,15 @@ let CustomerController = class CustomerController {
     createCustomer(files, customerDto) {
         const alldata = JSON.parse(JSON.stringify(files));
         const data = JSON.parse(JSON.stringify(customerDto));
-        const { images } = alldata;
-        return this.customerService.create(data, images);
+        const { images, profile_img } = alldata;
+        return this.customerService.create(data, images, profile_img);
     }
 };
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('create'),
     (0, swagger_1.ApiConsumes)('multipart/form-data'),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([{ name: 'images' }])),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([{ name: 'images' }, { name: 'profile_img' }])),
     (0, common_1.UsePipes)(new common_1.ValidationPipe({ transform: true })),
     __param(0, (0, common_1.UploadedFiles)()),
     __param(1, (0, common_1.Body)()),

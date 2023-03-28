@@ -27,6 +27,9 @@ export class Customers {
   @Column()
   email: string;
 
+  @Column({ nullable: true })
+  profile_img: string;
+
   @Column({ type: 'text', array: true, nullable: true })
   images: string[];
 

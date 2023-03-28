@@ -13,7 +13,7 @@ export class CustomerService {
     @Inject('BUCKET') private readonly bucket: S3ImageUpload,
   ) {}
 
-  async create(data: any, file: any) {
+  async create(data: any, file: any, profile_img: any) {
     try {
       const { property_Id, ...result } = data;
       const propertyAd = await this.propertyAd.findOne({
@@ -21,10 +21,14 @@ export class CustomerService {
       });
 
       if (propertyAd) {
-        let response: any = file.length ? await this.bucket.upload(file) : [];
+        const response: any = file.length ? await this.bucket.upload(file) : [];
+        const profilepic: any = profile_img.length
+          ? await this.bucket.singleImageUpload(profile_img[0])
+          : null;
         const res = new Customers();
         Object.keys(result).forEach((key) => {
           res[`${key}`] = result[`${key}`];
+          res.profile_img = profilepic;
           res.images = response;
           res.propertyAds = propertyAd;
         });

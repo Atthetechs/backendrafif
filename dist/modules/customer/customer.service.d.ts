@@ -7,7 +7,7 @@ export declare class CustomerService {
     private propertyAd;
     private readonly bucket;
     constructor(customerRepo: Repository<Customers>, propertyAd: Repository<PropertyAds>, bucket: S3ImageUpload);
-    create(data: any, file: any): Promise<{
+    create(data: any, file: any, profile_img: any): Promise<{
         status: number;
         message: string;
     } | {

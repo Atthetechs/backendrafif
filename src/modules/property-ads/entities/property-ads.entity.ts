@@ -44,7 +44,25 @@ export class PropertyAds {
   address: string;
 
   @Column()
-  price: string;
+  block_No: string;
+
+  @Column()
+  plot_No: string;
+
+  @Column()
+  building_No: string;
+
+  @Column()
+  street_No: string;
+
+  @Column()
+  town: string;
+
+  @Column({ type: 'float' })
+  price: number;
+
+  @Column({ nullable: true })
+  grace_days: string;
 
   @Column()
   status: string;
