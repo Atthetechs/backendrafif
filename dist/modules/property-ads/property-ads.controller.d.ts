@@ -6,6 +6,6 @@ export declare class PropertyAdsController {
     constructor(propertyService: PropertyAdsService);
     property(files: Array<Express.Multer.File>, propertyDto: CreatePropertyDto, req: any): Promise<{
         message: string;
-        url: string;
+        property_Id: number;
     }>;
 }

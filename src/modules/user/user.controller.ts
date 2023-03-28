@@ -10,8 +10,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../auth/auth.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
@@ -52,8 +51,12 @@ export class UserController {
   }
 
   @Get('contractFile/:id')
-  runContract(@Param('id') id: any, @Res() res: Response) {
-    return this.userService.contract(id, res);
+  @ApiParam({
+    name: 'id',
+    required: true,
+  })
+  runContract(@Param('id') id: any) {
+    return this.userService.contract(id);
   }
 
   @Get('images/:id')

@@ -64,16 +64,16 @@ export class UserService {
     }
   }
 
-
-  async contract(id: any, res: any) {
+  async contract(id: any) {
     try {
       const response = await this.propertyRepo.findOneBy({ id });
-      console.log(response);
       if (response) {
         const { customers, ...result } = response;
-        return res.render('index', result);
+        // return res.render('index', result);
+        return result;
       } else {
-        return res.render('error');
+        throw new HttpException('Property Not Exist', HttpStatus.BAD_REQUEST);
+        // return res.render('error');
       }
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);

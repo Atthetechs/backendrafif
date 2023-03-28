@@ -38,8 +38,8 @@ let UserController = class UserController {
     async getUser(req) {
         return await this.userService.finduser(req.user);
     }
-    runContract(id, res) {
-        return this.userService.contract(id, res);
+    runContract(id) {
+        return this.userService.contract(id);
     }
     getImages(id, res) {
         return this.userService.getOne(id, res);
@@ -77,10 +77,13 @@ __decorate([
 ], UserController.prototype, "getUser", null);
 __decorate([
     (0, common_1.Get)('contractFile/:id'),
+    (0, swagger_1.ApiParam)({
+        name: 'id',
+        required: true,
+    }),
     __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "runContract", null);
 __decorate([

@@ -28,7 +28,8 @@ export class PropertyAdsService {
       if (save) {
         return {
           message: 'Created Successfully',
-          url: `${process.env.BACKEND_URL}/user/contractFile/${save.id}`,
+          property_Id: save.id,
+          // url: `${process.env.BACKEND_URL}/user/contractFile/${save.id}`,
         };
       }
     } catch (err) {

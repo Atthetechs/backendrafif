@@ -85,16 +85,15 @@ let UserService = class UserService {
             throw new common_1.HttpException(err.message, common_1.HttpStatus.BAD_REQUEST);
         }
     }
-    async contract(id, res) {
+    async contract(id) {
         try {
             const response = await this.propertyRepo.findOneBy({ id });
-            console.log(response);
             if (response) {
                 const { customers } = response, result = __rest(response, ["customers"]);
-                return res.render('index', result);
+                return result;
             }
             else {
-                return res.render('error');
+                throw new common_1.HttpException('Property Not Exist', common_1.HttpStatus.BAD_REQUEST);
             }
         }
         catch (err) {

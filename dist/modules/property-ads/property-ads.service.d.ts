@@ -7,6 +7,6 @@ export declare class PropertyAdsService {
     constructor(propertyRepo: Repository<PropertyAds>, bucket: S3ImageUpload);
     createProperty(dataa: any, images: any, user: any): Promise<{
         message: string;
-        url: string;
+        property_Id: number;
     }>;
 }
