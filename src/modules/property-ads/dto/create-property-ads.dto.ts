@@ -85,7 +85,6 @@ export class CreatePropertyDto {
   town: string;
 
   @ApiProperty()
-  @IsNumber()
   @IsNotEmpty()
   price: number;
 
@@ -102,7 +101,6 @@ export class CreatePropertyDto {
   @IsNotEmpty()
   @IsString()
   created_at: string;
-  
 
   @ApiProperty({
     isArray: true,
