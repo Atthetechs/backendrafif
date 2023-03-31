@@ -29,6 +29,18 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
+], Customers.prototype, "address", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Customers.prototype, "company_name", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'float' }),
+    __metadata("design:type", Number)
+], Customers.prototype, "price", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
 ], Customers.prototype, "nationality_id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
@@ -39,9 +51,13 @@ __decorate([
     __metadata("design:type", String)
 ], Customers.prototype, "gender", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Customers.prototype, "phoneNumber", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Customers.prototype, "mobileNumber", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
@@ -49,9 +65,17 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
+], Customers.prototype, "grace_days", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Customers.prototype, "created_at", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
 ], Customers.prototype, "profile_img", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'text', array: true, nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', array: true }),
     __metadata("design:type", Array)
 ], Customers.prototype, "images", void 0);
 __decorate([

@@ -39,7 +39,7 @@ let S3ImageUpload = class S3ImageUpload {
                 return pictures;
             }
             else {
-                return pictures;
+                throw new common_1.HttpException('Images Not Save', common_1.HttpStatus.BAD_REQUEST);
             }
         }
         catch (err) {
@@ -63,7 +63,7 @@ let S3ImageUpload = class S3ImageUpload {
             }
         }
         catch (err) {
-            console.log(err);
+            throw new common_1.HttpException(err.message, common_1.HttpStatus.BAD_REQUEST);
         }
     }
     async getUploadedFile(id) {

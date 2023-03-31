@@ -18,9 +18,7 @@ export declare class PropertyAds {
     street_No: string;
     town: string;
     price: number;
-    grace_days: string;
     status: string;
-    created_at: string;
     images: string[];
     customers: Customers;
     user: User;

@@ -21,17 +21,20 @@ export class CustomerService {
       });
 
       if (propertyAd) {
-        const response: any = file.length ? await this.bucket.upload(file) : [];
+
+        const response: any = file.length && await this.bucket.upload(file);
         const profilepic: any = profile_img.length
-          ? await this.bucket.singleImageUpload(profile_img[0])
-          : null;
+          && await this.bucket.singleImageUpload(profile_img[0]);
+
         const res = new Customers();
+
         Object.keys(result).forEach((key) => {
-          res[`${key}`] = result[`${key}`];
+          res[`${key}`] = key == 'price'? parseInt(result[`${key}`]): result[`${key}`];
           res.profile_img = profilepic;
           res.images = response;
           res.propertyAds = propertyAd;
         });
+
         let respo = await this.customerRepo.save(res);
         if (!respo) {
           return { status: 400, message: 'Customer Not Created!' };
@@ -39,7 +42,7 @@ export class CustomerService {
           return { status: 200, message: 'Customer Created Successfully' };
         }
       } else {
-        return { message: 'Plz Create Property' };
+        return { message: 'This Property Not Available' };
       }
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);

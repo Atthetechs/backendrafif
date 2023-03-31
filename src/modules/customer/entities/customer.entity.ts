@@ -13,6 +13,15 @@ export class Customers {
   lastname: string;
 
   @Column()
+  address: string;
+
+  @Column()
+  company_name: string;
+
+  @Column({ type: 'float' })
+  price: number;
+
+  @Column()
   nationality_id: string;
 
   @Column()
@@ -21,16 +30,25 @@ export class Customers {
   @Column()
   gender: string;
 
-  @Column()
+  @Column({ nullable: true })
   phoneNumber: string;
+
+  @Column()
+  mobileNumber: string;
 
   @Column()
   email: string;
 
   @Column({ nullable: true })
+  grace_days: string;
+
+  @Column()
+  created_at: string;
+
+  @Column()
   profile_img: string;
 
-  @Column({ type: 'text', array: true, nullable: true })
+  @Column({ type: 'text', array: true })
   images: string[];
 
   @ManyToOne(() => PropertyAds, (property) => property.customers)

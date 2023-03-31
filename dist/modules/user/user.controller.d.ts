@@ -33,9 +33,7 @@ export declare class UserController {
         street_No: string;
         town: string;
         price: number;
-        grace_days: string;
         status: string;
-        created_at: string;
         images: string[];
         user: import("./entities/user.entity").User;
     }>;

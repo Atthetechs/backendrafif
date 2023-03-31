@@ -61,14 +61,8 @@ export class PropertyAds {
   @Column({ type: 'float' })
   price: number;
 
-  @Column({ nullable: true })
-  grace_days: string;
-
   @Column()
   status: string;
-
-  @Column()
-  created_at: string;
 
   @Column({ type: 'text', array: true, nullable: true })
   images: string[];

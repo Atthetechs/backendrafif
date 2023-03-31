@@ -31,7 +31,7 @@ export class S3ImageUpload {
       if (pictures.length == data.length) {
         return pictures;
       } else {
-        return pictures;
+        throw new HttpException('Images Not Save', HttpStatus.BAD_REQUEST);
       }
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
@@ -58,7 +58,7 @@ export class S3ImageUpload {
         );
       }
     } catch (err) {
-      console.log(err);
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 

@@ -43,13 +43,12 @@ let CustomerService = class CustomerService {
                 where: { id: property_Id },
             });
             if (propertyAd) {
-                const response = file.length ? await this.bucket.upload(file) : [];
+                const response = file.length && await this.bucket.upload(file);
                 const profilepic = profile_img.length
-                    ? await this.bucket.singleImageUpload(profile_img[0])
-                    : null;
+                    && await this.bucket.singleImageUpload(profile_img[0]);
                 const res = new customer_entity_1.Customers();
                 Object.keys(result).forEach((key) => {
-                    res[`${key}`] = result[`${key}`];
+                    res[`${key}`] = key == 'price' ? parseInt(result[`${key}`]) : result[`${key}`];
                     res.profile_img = profilepic;
                     res.images = response;
                     res.propertyAds = propertyAd;
@@ -63,7 +62,7 @@ let CustomerService = class CustomerService {
                 }
             }
             else {
-                return { message: 'Plz Create Property' };
+                return { message: 'This Property Not Available' };
             }
         }
         catch (err) {

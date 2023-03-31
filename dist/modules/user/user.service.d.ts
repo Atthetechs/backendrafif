@@ -32,9 +32,7 @@ export declare class UserService {
         street_No: string;
         town: string;
         price: number;
-        grace_days: string;
         status: string;
-        created_at: string;
         images: string[];
         user: User;
     }>;

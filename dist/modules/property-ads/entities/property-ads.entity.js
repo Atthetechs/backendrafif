@@ -84,17 +84,9 @@ __decorate([
     __metadata("design:type", Number)
 ], PropertyAds.prototype, "price", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
-    __metadata("design:type", String)
-], PropertyAds.prototype, "grace_days", void 0);
-__decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], PropertyAds.prototype, "status", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], PropertyAds.prototype, "created_at", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'text', array: true, nullable: true }),
     __metadata("design:type", Array)

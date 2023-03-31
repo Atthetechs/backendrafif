@@ -15,8 +15,6 @@ export declare class CreatePropertyDto {
     street_No: string;
     town: string;
     price: number;
-    grace_days?: string;
     status: string;
-    created_at: string;
     images: string;
 }

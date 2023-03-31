@@ -88,19 +88,10 @@ export class CreatePropertyDto {
   @IsNotEmpty()
   price: number;
 
-  @ApiProperty({ required: false })
-  @IsString()
-  grace_days?: string;
-
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
   status: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  created_at: string;
 
   @ApiProperty({
     isArray: true,
