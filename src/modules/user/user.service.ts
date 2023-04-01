@@ -35,7 +35,7 @@ export class UserService {
   }
 
   async findOne(email: string): Promise<User | undefined> {
-    return this.userRepo.findOne({ where: { email: email.toLowerCase() } });
+    return this.userRepo.findOne({ where: { email } });
   }
 
   async create(createDto: CreateUserDto) {
