@@ -5,9 +5,9 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    cors: true,
-  });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  app.enableCors();
 
   // Setting for hbs file
   app.useStaticAssets(join(__dirname, '../views'));
