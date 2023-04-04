@@ -45,33 +45,35 @@ export class PaymentDetailsService {
 
           const { payment_details, Late_payment } = customerData;
 
-          Object.keys(payment_details).forEach(async (key, i) => {
-            const value = payment_details[`${key}`].created_date;
-            const { db_year, db_month } = await this.dateFormat(value);
-            if (currentYear == db_year) {
-              if (db_month !== currentMonth) {
-                if (Object.keys(payment_details).length == i + 1) {
-                  if (Object.keys(Late_payment).length) {
-                    Object.keys(Late_payment).forEach(async (key, i) => {
-                      const value = Late_payment[`${key}`].created_date;
-                      const { db_year, db_month } = await this.dateFormat(
-                        value,
-                      );
-                      if (currentYear == db_year) {
-                        if (db_month !== currentMonth) {
-                          if (Object.keys(Late_payment).length == i + 1) {
-                            return this.defaultPayment(customerid.id);
+          if (Object.keys(payment_details).length) {
+            Object.keys(payment_details).forEach(async (key, i) => {
+              const value = payment_details[`${key}`].created_date;
+              const { db_year, db_month } = await this.dateFormat(value);
+              if (currentYear == db_year) {
+                if (db_month !== currentMonth) {
+                  if (Object.keys(payment_details).length == i + 1) {
+                    if (Object.keys(Late_payment).length) {
+                      Object.keys(Late_payment).forEach(async (key, i) => {
+                        const value = Late_payment[`${key}`].created_date;
+                        const { db_year, db_month } = await this.dateFormat(
+                          value,
+                        );
+                        if (currentYear == db_year) {
+                          if (db_month !== currentMonth) {
+                            if (Object.keys(Late_payment).length == i + 1) {
+                              return this.defaultPayment(customerid.id);
+                            }
                           }
                         }
-                      }
-                    });
-                  } else {
-                    return this.defaultPayment(customerid.id);
+                      });
+                    } else {
+                      return this.defaultPayment(customerid.id);
+                    }
                   }
                 }
               }
-            }
-          });
+            });
+          }
         });
       }
     } catch (err) {
@@ -97,38 +99,32 @@ export class PaymentDetailsService {
 
   async createPayment(id: any, price: any, payment_type: string) {
     try {
-      if (id) {
-        const currentDate: any = moment().format('DD');
-        const currentDay: any = moment().format('D');
-        const customerData: any = await this.customerRepo.findOne({
-          where: { id },
-        });
+      const currentDate: any = moment().format('DD');
+      const currentDay: any = moment().format('D');
+      const customerData: any = await this.customerRepo.findOne({
+        where: { id },
+      });
 
-        if (customerData) {
-          if (currentDay >= 1 && currentDate < 11) {
-            const createPayment = new Payment();
-            createPayment.payment_type = payment_type;
-            createPayment.paid = true;
-            createPayment.rent = price;
-            createPayment.customer = customerData;
-            const res = await this.paymentRepo.save(createPayment);
-            if (res)
-              return { status: 200, message: 'Payment Send Successfully' };
-          } else {
-            const createPayment = new LatePayment();
-            createPayment.payment_type = payment_type;
-            createPayment.paid = true;
-            createPayment.rent = price;
-            createPayment.customer = customerData;
-            const res = await this.latepaymentRepo.save(createPayment);
-            if (res)
-              return { status: 200, message: 'Payment Send Successfully' };
-          }
+      if (customerData) {
+        if (currentDay >= 1 && currentDate < 11) {
+          const createPayment = new Payment();
+          createPayment.payment_type = payment_type;
+          createPayment.paid = true;
+          createPayment.rent = price;
+          createPayment.customer = customerData;
+          const res = await this.paymentRepo.save(createPayment);
+          if (res) return { status: 200, message: 'Payment Send Successfully' };
         } else {
-          throw new HttpException('Customer Not Exist', HttpStatus.BAD_REQUEST);
+          const createPayment = new LatePayment();
+          createPayment.payment_type = payment_type;
+          createPayment.paid = true;
+          createPayment.rent = price;
+          createPayment.customer = customerData;
+          const res = await this.latepaymentRepo.save(createPayment);
+          if (res) return { status: 200, message: 'Payment Send Successfully' };
         }
       } else {
-        throw new HttpException('Plz Send Data', HttpStatus.BAD_REQUEST);
+        throw new HttpException('Customer Not Exist', HttpStatus.BAD_REQUEST);
       }
     } catch (err) {
       console.log(err);
