@@ -1,5 +1,14 @@
+import { LatePayment } from 'src/modules/payment_details/entities/late_payment.entity';
+import { Payment } from 'src/modules/payment_details/entities/payment.entity';
 import { PropertyAds } from 'src/modules/property-ads/entities/property-ads.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Customers {
@@ -39,11 +48,14 @@ export class Customers {
   @Column()
   email: string;
 
+  @Column({ type: 'float' })
+  advance_Payment: number;
+
   @Column({ nullable: true })
   grace_days: string;
 
-  @Column()
-  created_at: string;
+  @CreateDateColumn()
+  created_at: Date;
 
   @Column()
   profile_img: string;
@@ -53,4 +65,14 @@ export class Customers {
 
   @ManyToOne(() => PropertyAds, (property) => property.customers)
   propertyAds: PropertyAds;
+
+  @OneToMany(() => Payment, (payment) => payment.customer, {
+    onDelete: 'CASCADE',
+  })
+  payment_details: Payment;
+
+  @OneToMany(() => LatePayment, (payment) => payment.customer, {
+    onDelete: 'CASCADE',
+  })
+  Late_payment: LatePayment;
 }

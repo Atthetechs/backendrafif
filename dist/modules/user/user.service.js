@@ -42,20 +42,22 @@ let UserService = class UserService {
     }
     async finduser(user) {
         try {
-            const res = await this.userRepo
+            const resp = await this.userRepo
                 .createQueryBuilder('user')
                 .where('user.email =:email', { email: user.email })
                 .leftJoinAndSelect('user.propertyAds', 'propertyAds')
                 .leftJoinAndSelect('propertyAds.customers', 'customers')
+                .leftJoinAndSelect('customers.payment_details', 'payment_details')
+                .leftJoinAndSelect('customers.Late_payment', 'Late_payment')
                 .getOne();
-            return res;
+            return resp;
         }
         catch (err) {
             throw new common_1.HttpException(err.message, common_1.HttpStatus.BAD_REQUEST);
         }
     }
     async findOne(email) {
-        return this.userRepo.findOne({ where: { email: email.toLowerCase() } });
+        return this.userRepo.findOne({ where: { email } });
     }
     async create(createDto) {
         try {

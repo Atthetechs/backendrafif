@@ -16,6 +16,7 @@ const auth_module_1 = require("./modules/auth/auth.module");
 const property_ads_module_1 = require("./modules/property-ads/property-ads.module");
 const customer_module_1 = require("./modules/customer/customer.module");
 const config_1 = require("@nestjs/config");
+const payment_details_module_1 = require("./modules/payment_details/payment_details.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -29,6 +30,7 @@ AppModule = __decorate([
             auth_module_1.AuthModule,
             property_ads_module_1.PropertyAdsModule,
             customer_module_1.CustomerModule,
+            payment_details_module_1.PaymentDetailsModule,
         ],
         controllers: [app_controller_1.AppController],
     })

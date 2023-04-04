@@ -12,7 +12,8 @@ export declare class CreateCustomerDto {
     mobileNumber: string;
     email: string;
     grace_days?: string;
-    created_at: string;
+    advance_Payment: number;
+    payment_type: string;
     profile_img: string;
     images: string;
 }

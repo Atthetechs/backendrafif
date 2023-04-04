@@ -66,8 +66,12 @@ export class CreateCustomerDto {
 
   @ApiProperty()
   @IsNotEmpty()
+  advance_Payment: number;
+
+  @ApiProperty()
   @IsString()
-  created_at: string;
+  @IsNotEmpty()
+  payment_type: string;
 
   @ApiProperty({
     type: 'string',

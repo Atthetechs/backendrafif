@@ -5,9 +5,8 @@ const app_module_1 = require("./app.module");
 const swagger_1 = require("@nestjs/swagger");
 const path_1 = require("path");
 async function bootstrap() {
-    const app = await core_1.NestFactory.create(app_module_1.AppModule, {
-        cors: true,
-    });
+    const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    app.enableCors();
     app.useStaticAssets((0, path_1.join)(__dirname, '../views'));
     app.setBaseViewsDir((0, path_1.join)(__dirname, '../views'));
     app.setViewEngine('hbs');

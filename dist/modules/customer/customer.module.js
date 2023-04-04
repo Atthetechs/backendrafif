@@ -15,12 +15,13 @@ const s3_service_1 = require("../s3Bucket/s3.service");
 const customer_controller_1 = require("./customer.controller");
 const customer_service_1 = require("./customer.service");
 const customer_entity_1 = require("./entities/customer.entity");
+const payment_entity_1 = require("../payment_details/entities/payment.entity");
 let CustomerModule = class CustomerModule {
 };
 CustomerModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forFeature([customer_entity_1.Customers, property_ads_entity_1.PropertyAds]),
+            typeorm_1.TypeOrmModule.forFeature([customer_entity_1.Customers, property_ads_entity_1.PropertyAds, payment_entity_1.Payment]),
             platform_express_1.MulterModule.register({
                 dest: './public',
             }),

@@ -22,13 +22,15 @@ export class UserService {
 
   async finduser(user: any) {
     try {
-      const res = await this.userRepo
+      const resp = await this.userRepo
         .createQueryBuilder('user')
         .where('user.email =:email', { email: user.email })
         .leftJoinAndSelect('user.propertyAds', 'propertyAds')
         .leftJoinAndSelect('propertyAds.customers', 'customers')
+        .leftJoinAndSelect('customers.payment_details', 'payment_details')
+        .leftJoinAndSelect('customers.Late_payment', 'Late_payment')
         .getOne();
-      return res;
+      return resp;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
@@ -69,11 +71,9 @@ export class UserService {
       const response = await this.propertyRepo.findOneBy({ id });
       if (response) {
         const { customers, ...result } = response;
-        // return res.render('index', result);
         return result;
       } else {
         throw new HttpException('Property Not Exist', HttpStatus.BAD_REQUEST);
-        // return res.render('error');
       }
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);

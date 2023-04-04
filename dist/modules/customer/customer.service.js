@@ -30,10 +30,12 @@ const typeorm_2 = require("typeorm");
 const property_ads_entity_1 = require("../property-ads/entities/property-ads.entity");
 const s3_service_1 = require("../s3Bucket/s3.service");
 const customer_entity_1 = require("./entities/customer.entity");
+const payment_entity_1 = require("../payment_details/entities/payment.entity");
 let CustomerService = class CustomerService {
-    constructor(customerRepo, propertyAd, bucket) {
+    constructor(customerRepo, propertyAd, payment, bucket) {
         this.customerRepo = customerRepo;
         this.propertyAd = propertyAd;
+        this.payment = payment;
         this.bucket = bucket;
     }
     async create(data, file, profile_img) {
@@ -43,18 +45,27 @@ let CustomerService = class CustomerService {
                 where: { id: property_Id },
             });
             if (propertyAd) {
-                const response = file.length && await this.bucket.upload(file);
-                const profilepic = profile_img.length
-                    && await this.bucket.singleImageUpload(profile_img[0]);
+                const response = file.length && (await this.bucket.upload(file));
+                const profilepic = profile_img.length &&
+                    (await this.bucket.singleImageUpload(profile_img[0]));
                 const res = new customer_entity_1.Customers();
                 Object.keys(result).forEach((key) => {
-                    res[`${key}`] = key == 'price' ? parseInt(result[`${key}`]) : result[`${key}`];
+                    res[`${key}`] =
+                        key == 'price' || key == 'advance_Payment'
+                            ? parseInt(result[`${key}`])
+                            : result[`${key}`];
                     res.profile_img = profilepic;
                     res.images = response;
                     res.propertyAds = propertyAd;
                 });
-                let respo = await this.customerRepo.save(res);
-                if (!respo) {
+                const respo = await this.customerRepo.save(res);
+                const paymentRespo = new payment_entity_1.Payment();
+                paymentRespo.payment_type = result.payment_type;
+                paymentRespo.rent = parseInt(result.price);
+                paymentRespo.paid = true;
+                paymentRespo.customer = respo;
+                const pay = await this.payment.save(paymentRespo);
+                if (!respo && !pay) {
                     return { status: 400, message: 'Customer Not Created!' };
                 }
                 else {
@@ -74,8 +85,10 @@ CustomerService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(customer_entity_1.Customers)),
     __param(1, (0, typeorm_1.InjectRepository)(property_ads_entity_1.PropertyAds)),
-    __param(2, (0, common_1.Inject)('BUCKET')),
+    __param(2, (0, typeorm_1.InjectRepository)(payment_entity_1.Payment)),
+    __param(3, (0, common_1.Inject)('BUCKET')),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         s3_service_1.S3ImageUpload])
 ], CustomerService);

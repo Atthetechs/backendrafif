@@ -4,12 +4,16 @@ import { Repository } from 'typeorm';
 import { PropertyAds } from '../property-ads/entities/property-ads.entity';
 import { S3ImageUpload } from '../s3Bucket/s3.service';
 import { Customers } from './entities/customer.entity';
+import axios from 'axios';
+import { Payment } from '../payment_details/entities/payment.entity';
+import moment from 'moment';
 
 @Injectable()
 export class CustomerService {
   constructor(
     @InjectRepository(Customers) private customerRepo: Repository<Customers>,
     @InjectRepository(PropertyAds) private propertyAd: Repository<PropertyAds>,
+    @InjectRepository(Payment) private payment: Repository<Payment>,
     @Inject('BUCKET') private readonly bucket: S3ImageUpload,
   ) {}
 
@@ -21,22 +25,33 @@ export class CustomerService {
       });
 
       if (propertyAd) {
-
-        const response: any = file.length && await this.bucket.upload(file);
-        const profilepic: any = profile_img.length
-          && await this.bucket.singleImageUpload(profile_img[0]);
+        const response: any = file.length && (await this.bucket.upload(file));
+        const profilepic: any =
+          profile_img.length &&
+          (await this.bucket.singleImageUpload(profile_img[0]));
 
         const res = new Customers();
-
         Object.keys(result).forEach((key) => {
-          res[`${key}`] = key == 'price'? parseInt(result[`${key}`]): result[`${key}`];
+          res[`${key}`] =
+            key == 'price' || key == 'advance_Payment'
+              ? parseInt(result[`${key}`])
+              : result[`${key}`];
           res.profile_img = profilepic;
           res.images = response;
           res.propertyAds = propertyAd;
         });
 
-        let respo = await this.customerRepo.save(res);
-        if (!respo) {
+        const respo = await this.customerRepo.save(res);
+
+        const paymentRespo = new Payment();
+        paymentRespo.payment_type = result.payment_type;
+        paymentRespo.rent = parseInt(result.price);
+        paymentRespo.paid = true;
+        paymentRespo.customer = respo;
+
+        const pay = await this.payment.save(paymentRespo);
+
+        if (!respo && !pay) {
           return { status: 400, message: 'Customer Not Created!' };
         } else {
           return { status: 200, message: 'Customer Created Successfully' };

@@ -10,6 +10,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Customers = void 0;
+const late_payment_entity_1 = require("../../payment_details/entities/late_payment.entity");
+const payment_entity_1 = require("../../payment_details/entities/payment.entity");
 const property_ads_entity_1 = require("../../property-ads/entities/property-ads.entity");
 const typeorm_1 = require("typeorm");
 let Customers = class Customers {
@@ -63,12 +65,16 @@ __decorate([
     __metadata("design:type", String)
 ], Customers.prototype, "email", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'float' }),
+    __metadata("design:type", Number)
+], Customers.prototype, "advance_Payment", void 0);
+__decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Customers.prototype, "grace_days", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
 ], Customers.prototype, "created_at", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
@@ -82,6 +88,18 @@ __decorate([
     (0, typeorm_1.ManyToOne)(() => property_ads_entity_1.PropertyAds, (property) => property.customers),
     __metadata("design:type", property_ads_entity_1.PropertyAds)
 ], Customers.prototype, "propertyAds", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => payment_entity_1.Payment, (payment) => payment.customer, {
+        onDelete: 'CASCADE',
+    }),
+    __metadata("design:type", payment_entity_1.Payment)
+], Customers.prototype, "payment_details", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => late_payment_entity_1.LatePayment, (payment) => payment.customer, {
+        onDelete: 'CASCADE',
+    }),
+    __metadata("design:type", late_payment_entity_1.LatePayment)
+], Customers.prototype, "Late_payment", void 0);
 Customers = __decorate([
     (0, typeorm_1.Entity)()
 ], Customers);

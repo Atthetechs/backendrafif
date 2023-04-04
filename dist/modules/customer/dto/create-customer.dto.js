@@ -92,9 +92,14 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", Number)
+], CreateCustomerDto.prototype, "advance_Payment", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], CreateCustomerDto.prototype, "created_at", void 0);
+], CreateCustomerDto.prototype, "payment_type", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         type: 'string',

@@ -6,10 +6,11 @@ import { S3ImageUpload } from '../s3Bucket/s3.service';
 import { CustomerController } from './customer.controller';
 import { CustomerService } from './customer.service';
 import { Customers } from './entities/customer.entity';
+import { Payment } from '../payment_details/entities/payment.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Customers, PropertyAds]),
+    TypeOrmModule.forFeature([Customers, PropertyAds, Payment]),
     MulterModule.register({
       dest: './public',
     }),

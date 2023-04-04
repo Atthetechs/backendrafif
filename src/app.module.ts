@@ -7,7 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { PropertyAdsModule } from './modules/property-ads/property-ads.module';
 import { CustomerModule } from './modules/customer/customer.module';
 import { ConfigModule } from '@nestjs/config';
-
+import { PaymentDetailsModule } from './modules/payment_details/payment_details.module';
 
 @Module({
   imports: [
@@ -19,6 +19,7 @@ import { ConfigModule } from '@nestjs/config';
     AuthModule,
     PropertyAdsModule,
     CustomerModule,
+    PaymentDetailsModule,
   ],
   controllers: [AppController],
   // providers: [AppService],
