@@ -33,9 +33,7 @@ export class CustomerService {
         const res = new Customers();
         Object.keys(result).forEach((key) => {
           res[`${key}`] =
-            key == 'price' || key == 'advance_Payment'
-              ? parseInt(result[`${key}`])
-              : result[`${key}`];
+            key == 'price' ? parseInt(result[`${key}`]) : result[`${key}`];
           res.profile_img = profilepic;
           res.images = response;
           res.propertyAds = propertyAd;

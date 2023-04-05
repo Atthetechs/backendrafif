@@ -48,9 +48,6 @@ export class Customers {
   @Column()
   email: string;
 
-  @Column({ type: 'float' })
-  advance_Payment: number;
-
   @Column({ nullable: true })
   grace_days: string;
 

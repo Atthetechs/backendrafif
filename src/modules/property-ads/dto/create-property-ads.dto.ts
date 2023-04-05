@@ -88,11 +88,6 @@ export class CreatePropertyDto {
   @IsNotEmpty()
   price: number;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  status: string;
-
   @ApiProperty({
     isArray: true,
     type: 'string',

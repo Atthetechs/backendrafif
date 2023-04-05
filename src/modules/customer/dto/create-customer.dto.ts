@@ -65,10 +65,6 @@ export class CreateCustomerDto {
   grace_days?: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  advance_Payment: number;
-
-  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   payment_type: string;

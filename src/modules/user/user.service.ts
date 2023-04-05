@@ -24,12 +24,12 @@ export class UserService {
     try {
       const resp = await this.userRepo
         .createQueryBuilder('user')
-        .where('user.email =:email', { email: user.email })
+        // .where('user.email =:email', { email: user.email })
         .leftJoinAndSelect('user.propertyAds', 'propertyAds')
         .leftJoinAndSelect('propertyAds.customers', 'customers')
         .leftJoinAndSelect('customers.payment_details', 'payment_details')
         .leftJoinAndSelect('customers.Late_payment', 'Late_payment')
-        .getOne();
+        .getMany();
       return resp;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);

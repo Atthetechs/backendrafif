@@ -61,9 +61,6 @@ export class PropertyAds {
   @Column({ type: 'float' })
   price: number;
 
-  @Column()
-  status: string;
-
   @Column({ type: 'text', array: true, nullable: true })
   images: string[];
 

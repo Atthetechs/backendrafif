@@ -45,7 +45,7 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('getUser')
+  @Post('getUser')
   async getUser(@Req() req) {
     return await this.userService.finduser(req.user);
   }
