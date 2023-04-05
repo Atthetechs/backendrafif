@@ -32,7 +32,8 @@ export class UserService {
         .getMany();
 
       const alldata = resp.map((val) => {
-        return delete val.password;
+        const { password, ...result } = val;
+        return result;
       });
 
       return alldata;
