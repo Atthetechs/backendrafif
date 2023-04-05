@@ -42,7 +42,6 @@ export class CustomerService {
         const respo = await this.customerRepo.save(res);
 
         const paymentRespo = new Payment();
-        paymentRespo.payment_type = result.payment_type;
         paymentRespo.rent = parseInt(result.price);
         paymentRespo.paid = true;
         paymentRespo.customer = respo;

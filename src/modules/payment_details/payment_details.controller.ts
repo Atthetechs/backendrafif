@@ -15,10 +15,6 @@ export class PaymentDetailsController {
 
   @Post('create')
   paymentDetail(@Body() body: PaymentDTO) {
-    return this.paymentService.createPayment(
-      body.customer_id,
-      body.price,
-      body.payment_type,
-    );
+    return this.paymentService.createPayment(body.customer_id, body.price);
   }
 }

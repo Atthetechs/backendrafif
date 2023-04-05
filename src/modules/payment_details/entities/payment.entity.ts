@@ -12,9 +12,6 @@ export class Payment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true })
-  payment_type: string;
-
   @Column({ nullable: true, type: 'float' })
   rent: number;
 

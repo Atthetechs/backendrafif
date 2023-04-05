@@ -30,7 +30,12 @@ export class UserService {
         .leftJoinAndSelect('customers.payment_details', 'payment_details')
         .leftJoinAndSelect('customers.Late_payment', 'Late_payment')
         .getMany();
-      return resp;
+
+      const alldata = resp.map((val) => {
+        return delete val.password;
+      });
+
+      return alldata;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }

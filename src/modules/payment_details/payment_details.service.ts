@@ -87,7 +87,6 @@ export class PaymentDetailsService {
         where: { id },
       });
       const createpay = new Payment();
-      createpay.payment_type = null;
       createpay.rent = null;
       createpay.un_paid = true;
       createpay.customer = customerData;
@@ -97,7 +96,7 @@ export class PaymentDetailsService {
     }
   }
 
-  async createPayment(id: any, price: any, payment_type: string) {
+  async createPayment(id: any, price: any) {
     try {
       const currentDate: any = moment().format('DD');
       const currentDay: any = moment().format('D');
@@ -108,7 +107,6 @@ export class PaymentDetailsService {
       if (customerData) {
         if (currentDay >= 1 && currentDate < 11) {
           const createPayment = new Payment();
-          createPayment.payment_type = payment_type;
           createPayment.paid = true;
           createPayment.rent = price;
           createPayment.customer = customerData;
@@ -116,7 +114,6 @@ export class PaymentDetailsService {
           if (res) return { status: 200, message: 'Payment Send Successfully' };
         } else {
           const createPayment = new LatePayment();
-          createPayment.payment_type = payment_type;
           createPayment.paid = true;
           createPayment.rent = price;
           createPayment.customer = customerData;
