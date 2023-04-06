@@ -112,7 +112,12 @@ export class PaymentDetailsService {
           createPayment.rent = price;
           createPayment.customer = customerData;
           const res = await this.paymentRepo.save(createPayment);
-          if (res) return { status: 200, message: 'Payment Send Successfully' };
+          if (res)
+            return {
+              status: 200,
+              customer_id: id,
+              message: 'Payment Send Successfully',
+            };
         } else {
           const createPayment = new LatePayment();
           createPayment.payment_type = payment_type;
@@ -120,7 +125,12 @@ export class PaymentDetailsService {
           createPayment.rent = price;
           createPayment.customer = customerData;
           const res = await this.latepaymentRepo.save(createPayment);
-          if (res) return { status: 200, message: 'Payment Send Successfully' };
+          if (res)
+            return {
+              status: 200,
+              customer_id: id,
+              message: 'Payment Send Successfully',
+            };
         }
       } else {
         throw new HttpException('Customer Not Exist', HttpStatus.BAD_REQUEST);
