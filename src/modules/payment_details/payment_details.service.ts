@@ -136,7 +136,7 @@ export class PaymentDetailsService {
         throw new HttpException('Customer Not Exist', HttpStatus.BAD_REQUEST);
       }
     } catch (err) {
-      console.log(err);
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 }
