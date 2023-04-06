@@ -87,6 +87,7 @@ export class PaymentDetailsService {
         where: { id },
       });
       const createpay = new Payment();
+      createpay.payment_type = null;
       createpay.rent = null;
       createpay.un_paid = true;
       createpay.customer = customerData;

@@ -12,7 +12,7 @@ export class LatePayment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   payment_type: string;
 
   @Column({ nullable: true, type: 'float' })
