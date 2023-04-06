@@ -58,4 +58,15 @@ export class CustomerService {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
+
+  async updates(user: any) {
+    try {
+      const customer = await this.customerRepo.findOne({
+        where: { email: user.email },
+      });
+      console.log(customer);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 }

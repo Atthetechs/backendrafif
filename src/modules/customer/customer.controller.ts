@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Patch,
   Post,
+  Req,
   UploadedFile,
   UploadedFiles,
   UseGuards,
@@ -36,5 +38,11 @@ export class CustomerController {
     const data = JSON.parse(JSON.stringify(customerDto));
     const { images, profile_img } = alldata;
     return this.customerService.create(data, images, profile_img);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('update')
+  update(@Body() body: any, @Req() req) {
+    return this.customerService.updates(req.user);
   }
 }

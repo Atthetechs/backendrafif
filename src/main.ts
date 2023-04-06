@@ -7,7 +7,13 @@ import { join } from 'path';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  app.enableCors();
+  app.enableCors({
+    allowedHeaders: '*',
+    origin: ['http://localhost:3000', 'https://nadid.atthetech.com'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 200,
+  });
 
   // Setting for hbs file
   app.useStaticAssets(join(__dirname, '../views'));

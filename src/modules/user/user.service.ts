@@ -22,21 +22,24 @@ export class UserService {
 
   async finduser(user: any) {
     try {
-      const resp = await this.userRepo
+      let userdata = {};
+      const allresp: any = await this.userRepo
         .createQueryBuilder('user')
-        // .where('user.email =:email', { email: user.email })
         .leftJoinAndSelect('user.propertyAds', 'propertyAds')
         .leftJoinAndSelect('propertyAds.customers', 'customers')
         .leftJoinAndSelect('customers.payment_details', 'payment_details')
         .leftJoinAndSelect('customers.Late_payment', 'Late_payment')
         .getMany();
 
-      const alldata = resp.map((val) => {
-        const { password, ...result } = val;
-        return result;
+      allresp.forEach((val: any, i: number) => {
+        if (val.email === user.email) {
+          userdata = val;
+          allresp.splice(i, i + 1);
+        }
+        delete val.password;
       });
 
-      return alldata;
+      return { status: 200, user: userdata, otherusers: allresp };
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
