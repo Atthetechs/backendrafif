@@ -4,16 +4,14 @@ import { Repository } from 'typeorm';
 import { PropertyAds } from '../property-ads/entities/property-ads.entity';
 import { S3ImageUpload } from '../s3Bucket/s3.service';
 import { Customers } from './entities/customer.entity';
-import axios from 'axios';
-import { Payment } from '../payment_details/entities/payment.entity';
-import moment from 'moment';
+// import { Payment } from '../payment_details/entities/payment.entity';
 
 @Injectable()
 export class CustomerService {
   constructor(
     @InjectRepository(Customers) private customerRepo: Repository<Customers>,
     @InjectRepository(PropertyAds) private propertyAd: Repository<PropertyAds>,
-    @InjectRepository(Payment) private payment: Repository<Payment>,
+    // @InjectRepository(Payment) private payment: Repository<Payment>,
     @Inject('BUCKET') private readonly bucket: S3ImageUpload,
   ) {}
 
@@ -41,14 +39,14 @@ export class CustomerService {
 
         const respo = await this.customerRepo.save(res);
 
-        const paymentRespo = new Payment();
-        paymentRespo.rent = parseInt(result.price);
-        paymentRespo.paid = true;
-        paymentRespo.customer = respo;
+        // const paymentRespo = new Payment();
+        // paymentRespo.rent = parseInt(result.price);
+        // paymentRespo.paid = true;
+        // paymentRespo.customer = respo;
 
-        const pay = await this.payment.save(paymentRespo);
+        // const pay = await this.payment.save(paymentRespo);
 
-        if (!respo && !pay) {
+        if (!respo) {
           return { status: 400, message: 'Customer Not Created!' };
         } else {
           return { status: 200, message: 'Customer Created Successfully' };

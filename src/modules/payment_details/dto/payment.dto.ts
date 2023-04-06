@@ -10,4 +10,9 @@ export class PaymentDTO {
   @ApiProperty()
   @IsNotEmpty()
   price: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  payment_type: string;
 }

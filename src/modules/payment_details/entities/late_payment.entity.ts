@@ -12,6 +12,9 @@ export class LatePayment {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column()
+  payment_type: string;
+
   @Column({ nullable: true, type: 'float' })
   rent: number;
 
