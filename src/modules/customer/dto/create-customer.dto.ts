@@ -64,11 +64,6 @@ export class CreateCustomerDto {
   @IsString()
   grace_days?: string;
 
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  payment_type: string;
-
   @ApiProperty({
     type: 'string',
     format: 'binary',
