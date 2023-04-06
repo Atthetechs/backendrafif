@@ -115,7 +115,7 @@ export class PaymentDetailsService {
           if (res)
             return {
               status: 200,
-              customer_id: res.id,
+              customer_id: id,
               message: 'Payment Send Successfully',
             };
         } else {
@@ -128,7 +128,7 @@ export class PaymentDetailsService {
           if (res)
             return {
               status: 200,
-              customer_id: res.id,
+              customer_id: id,
               message: 'Payment Send Successfully',
             };
         }
