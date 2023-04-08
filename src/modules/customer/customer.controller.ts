@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Param,
   Patch,
   Post,
   Req,
@@ -11,11 +12,14 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CustomerService } from './customer.service';
-import { CreateCustomerDto } from './dto/create-customer.dto';
+import { CreateCustomerDto, uploadFile } from './dto/create-customer.dto';
 
 @ApiTags('Customer')
 @ApiBearerAuth()
@@ -38,6 +42,20 @@ export class CustomerController {
     const data = JSON.parse(JSON.stringify(customerDto));
     const { images, profile_img } = alldata;
     return this.customerService.create(data, images, profile_img);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('upload/:id')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'contractFile' }]))
+  uplodFile(
+    @Param('id') id: number,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Body() data: uploadFile,
+  ) {
+    const alldata = JSON.parse(JSON.stringify(files));
+    const { contractFile } = alldata;
+    return this.customerService.upload(contractFile, id);
   }
 
   @UseGuards(JwtAuthGuard)

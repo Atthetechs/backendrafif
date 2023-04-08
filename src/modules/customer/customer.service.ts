@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { PropertyAds } from '../property-ads/entities/property-ads.entity';
 import { S3ImageUpload } from '../s3Bucket/s3.service';
 import { Customers } from './entities/customer.entity';
+import { ContractFiles } from './entities/contractFile.entity';
 // import { Payment } from '../payment_details/entities/payment.entity';
 
 @Injectable()
@@ -11,6 +12,8 @@ export class CustomerService {
   constructor(
     @InjectRepository(Customers) private customerRepo: Repository<Customers>,
     @InjectRepository(PropertyAds) private propertyAd: Repository<PropertyAds>,
+    @InjectRepository(ContractFiles)
+    private contractRepo: Repository<ContractFiles>,
     // @InjectRepository(Payment) private payment: Repository<Payment>,
     @Inject('BUCKET') private readonly bucket: S3ImageUpload,
   ) {}
@@ -53,6 +56,37 @@ export class CustomerService {
         }
       } else {
         return { message: 'This Property Not Available' };
+      }
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async upload(file: any, id: number) {
+    try {
+      if (file.length) {
+        const customer = await this.customerRepo.findOne({ where: { id } });
+        if (customer) {
+          const uploadFile = await this.bucket.contractFiles(file);
+
+          if (uploadFile.length)
+            for (let i = 0; i < uploadFile.length; i++) {
+              const contractRes = new ContractFiles();
+              contractRes.name = uploadFile[i].name;
+              contractRes.key = uploadFile[i].key;
+              contractRes.customer = customer;
+              const res = await this.contractRepo.save(contractRes);
+              if (Object.keys(res).length) {
+                if (uploadFile.length == i + 1) {
+                  return { status: 200, message: 'File Uploaded' };
+                }
+              }
+            }
+        } else {
+          return { status: 400, message: 'Customer Does Not Exist' };
+        }
+      } else {
+        return { status: 400, message: 'Plz Upload File' };
       }
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);

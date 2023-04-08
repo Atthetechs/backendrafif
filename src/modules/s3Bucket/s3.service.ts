@@ -21,7 +21,7 @@ export class S3ImageUpload {
         const uploadParams = {
           Bucket: process.env.AWS_BUCKET_NAME,
           Body: fileStream,
-          Key: data[i].filename,
+          Key: `customerImages/${data[i].filename}`,
         };
         const respo = await this.s3.upload(uploadParams).promise();
         if (respo.Key)
@@ -45,7 +45,7 @@ export class S3ImageUpload {
       const uploadParams = {
         Bucket: process.env.AWS_BUCKET_NAME,
         Body: fileStream,
-        Key: data.filename,
+        Key: `customerProfile/${data.filename}`,
       };
 
       const respo = await this.s3.upload(uploadParams).promise();
@@ -62,6 +62,32 @@ export class S3ImageUpload {
     }
   }
 
+  async contractFiles(data: any) {
+    try {
+      const pictures: any = [];
+
+      for (let i = 0; i < data.length; i++) {
+        const fileStream = createReadStream(data[i].path);
+        const uploadParams = {
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Body: fileStream,
+          Key: `contractFiles/${data[i].filename}`,
+        };
+        const respo = await this.s3.upload(uploadParams).promise();
+        if (respo.Key)
+          pictures.push({ name: data[i].originalname, key: respo.Key });
+      }
+
+      if (pictures.length == data.length) {
+        return pictures;
+      } else {
+        throw new HttpException('Images Not Save', HttpStatus.BAD_REQUEST);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   async getUploadedFile(id: any) {
     const downloadParams = {
       Key: id,
@@ -69,4 +95,12 @@ export class S3ImageUpload {
     };
     return this.s3.getObject(downloadParams).createReadStream();
   }
+
+  // async getContractFileFromS3(id: any) {
+  //   const downloadParams = {
+  //     Key: `contractFiles/${id}`,
+  //     Bucket: process.env.AWS_BUCKET_NAME,
+  //   };
+  //   return this.s3.getObject(downloadParams).createReadStream();
+  // }
 }

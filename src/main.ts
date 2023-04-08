@@ -10,9 +10,8 @@ async function bootstrap() {
   app.enableCors({
     allowedHeaders: '*',
     origin: ['http://localhost:3000', 'https://nadid.atthetech.com'],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    methods: 'GET,HEAD,PUT,POST,DELETE',
     credentials: true,
-    optionsSuccessStatus: 200,
   });
 
   // Setting for hbs file

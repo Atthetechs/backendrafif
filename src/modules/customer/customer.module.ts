@@ -7,10 +7,11 @@ import { CustomerController } from './customer.controller';
 import { CustomerService } from './customer.service';
 import { Customers } from './entities/customer.entity';
 import { Payment } from '../payment_details/entities/payment.entity';
+import { ContractFiles } from './entities/contractFile.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Customers, PropertyAds, Payment]),
+    TypeOrmModule.forFeature([Customers, PropertyAds, Payment, ContractFiles]),
     MulterModule.register({
       dest: './public',
     }),

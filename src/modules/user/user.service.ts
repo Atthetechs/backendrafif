@@ -22,23 +22,26 @@ export class UserService {
 
   async finduser(user: any) {
     try {
-      let userdata = {};
+      const result = await this.userRepo
+        .createQueryBuilder('user')
+        .where('user.email = :email', { email: user.email })
+        .leftJoinAndSelect('user.propertyAds', 'propertyAds')
+        .leftJoinAndSelect('propertyAds.customers', 'customers')
+        .leftJoinAndSelect('customers.contractFiles', 'contractFiles')
+        .leftJoinAndSelect('customers.payment_details', 'payment_details')
+        .leftJoinAndSelect('customers.Late_payment', 'Late_payment')
+        .getOne();
+
       const allresp: any = await this.userRepo
         .createQueryBuilder('user')
         .leftJoinAndSelect('user.propertyAds', 'propertyAds')
         .leftJoinAndSelect('propertyAds.customers', 'customers')
+        .leftJoinAndSelect('customers.contractFiles', 'contractFiles')
         .leftJoinAndSelect('customers.payment_details', 'payment_details')
         .leftJoinAndSelect('customers.Late_payment', 'Late_payment')
         .getMany();
 
-      allresp.forEach((val: any, i: number) => {
-        if (val.email === user.email) {
-          userdata = val;
-          allresp.splice(i, i);
-        }
-        delete val.password;
-      });
-      return { status: 200, user: userdata, otherusers: allresp };
+      return { user: result, allusers: allresp };
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }

@@ -79,3 +79,13 @@ export class CreateCustomerDto {
   })
   images: string;
 }
+
+export class uploadFile {
+  @ApiProperty({
+    isArray: true,
+    type: 'string',
+    format: 'binary',
+    description: 'Image file to upload',
+  })
+  contractFile: string;
+}

@@ -1,11 +1,5 @@
 import { PropertyAds } from 'src/modules/property-ads/entities/property-ads.entity';
-import {
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryColumn,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
