@@ -48,6 +48,7 @@ export class PaymentDetailsService {
           if (Object.keys(payment_details).length) {
             Object.keys(payment_details).forEach(async (key, i) => {
               const value = payment_details[`${key}`].created_date;
+              const rent = payment_details[`${key}`].rent;
               const { db_year, db_month } = await this.dateFormat(value);
               if (currentYear == db_year) {
                 if (db_month !== currentMonth) {
@@ -70,6 +71,22 @@ export class PaymentDetailsService {
                       return this.defaultPayment(customerid.id);
                     }
                   }
+                } else {
+                  if (db_month == currentMonth && rent == null) {
+                    if (Object.keys(Late_payment).length) {
+                      Object.keys(Late_payment).forEach(async (key, i) => {
+                        const value = Late_payment[`${key}`].created_date;
+                        const { db_year, db_month } = await this.dateFormat(
+                          value,
+                        );
+                        if (currentYear == db_year) {
+                          if (db_month == currentMonth) {
+                            return this.delNullPayment(customerid.id);
+                          }
+                        }
+                      });
+                    }
+                  }
                 }
               }
             });
@@ -78,6 +95,19 @@ export class PaymentDetailsService {
       }
     } catch (err) {
       console.log(err);
+    }
+  }
+
+  async delNullPayment(id: any) {
+    try {
+      return await this.customerRepo
+        .createQueryBuilder('customers')
+        .delete()
+        .from(Customers)
+        .where('id = :id', { id })
+        .execute();
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -90,6 +120,7 @@ export class PaymentDetailsService {
       createpay.payment_type = null;
       createpay.rent = null;
       createpay.un_paid = true;
+      createpay.bank_id = null;
       createpay.customer = customerData;
       return await this.paymentRepo.save(createpay);
     } catch (err) {
@@ -97,7 +128,12 @@ export class PaymentDetailsService {
     }
   }
 
-  async createPayment(id: any, price: any, payment_type: string) {
+  async createPayment(
+    id: any,
+    price: any,
+    payment_type: string,
+    bank_id: string,
+  ) {
     try {
       const currentDate: any = moment().format('DD');
       const currentDay: any = moment().format('D');
@@ -111,6 +147,7 @@ export class PaymentDetailsService {
           createPayment.payment_type = payment_type;
           createPayment.paid = true;
           createPayment.rent = price;
+          createPayment.bank_id = bank_id;
           createPayment.customer = customerData;
           const res = await this.paymentRepo.save(createPayment);
           if (res)
@@ -124,6 +161,7 @@ export class PaymentDetailsService {
           createPayment.payment_type = payment_type;
           createPayment.paid = true;
           createPayment.rent = price;
+          createPayment.bank_id = bank_id;
           createPayment.customer = customerData;
           const res = await this.latepaymentRepo.save(createPayment);
           if (res)

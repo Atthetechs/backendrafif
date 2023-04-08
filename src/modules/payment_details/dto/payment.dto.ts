@@ -14,4 +14,8 @@ export class PaymentDTO {
   @IsNotEmpty()
   @IsString()
   payment_type: string;
+
+  @ApiProperty({ default: null })
+  @IsString()
+  bank_id: string;
 }
