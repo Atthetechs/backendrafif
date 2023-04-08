@@ -44,8 +44,9 @@ export class CustomerController {
     return this.customerService.create(data, images, profile_img);
   }
 
+  // customer id
   @UseGuards(JwtAuthGuard)
-  @Post('upload/:id')
+  @Post('upload-contractfile/:id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileFieldsInterceptor([{ name: 'contractFile' }]))
   uplodFile(
