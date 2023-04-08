@@ -59,8 +59,12 @@ export class UserController {
     return this.userService.contract(id);
   }
 
-  @Get('images/:id')
-  getImages(@Param('id') id: any, @Res() res) {
-    return this.userService.getOne(id, res);
+  @Get('images/:foldername/:id')
+  getImages(
+    @Param('foldername') foldername: any,
+    @Param('id') id: any,
+    @Res() res,
+  ) {
+    return this.userService.getOne(foldername, id, res);
   }
 }

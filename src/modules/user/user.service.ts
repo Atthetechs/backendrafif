@@ -91,9 +91,9 @@ export class UserService {
     }
   }
 
-  async getOne(id: any, res: any) {
+  async getOne(foldername: any, id: any, res: any) {
     if (id) {
-      const readStream = await this.bucket.getUploadedFile(id);
+      const readStream = await this.bucket.getUploadedFile(foldername, id);
       readStream.pipe(res);
     } else {
       return { message: 'No Image' };

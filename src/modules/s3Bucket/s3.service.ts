@@ -88,19 +88,11 @@ export class S3ImageUpload {
     }
   }
 
-  async getUploadedFile(id: any) {
+  async getUploadedFile(foldername: any, id: any) {
     const downloadParams = {
-      Key: id,
+      Key: `${foldername}/${id}`,
       Bucket: process.env.AWS_BUCKET_NAME,
     };
     return this.s3.getObject(downloadParams).createReadStream();
   }
-
-  // async getContractFileFromS3(id: any) {
-  //   const downloadParams = {
-  //     Key: `contractFiles/${id}`,
-  //     Bucket: process.env.AWS_BUCKET_NAME,
-  //   };
-  //   return this.s3.getObject(downloadParams).createReadStream();
-  // }
 }
