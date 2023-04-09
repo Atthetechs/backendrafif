@@ -22,7 +22,7 @@ export class PaymentDetailsService {
     return { db_year, db_month };
   }
 
-  @Cron('0 */5 * 11-30 * *')
+  @Cron('0 */1 * 1-30 * *')
   async checkDate() {
     try {
       const currentMonth = moment().format('MMMM');
@@ -48,40 +48,30 @@ export class PaymentDetailsService {
           if (Object.keys(payment_details).length) {
             Object.keys(payment_details).forEach(async (key, i) => {
               const value = payment_details[`${key}`].created_date;
+              const id = payment_details[`${key}`].id;
               const rent = payment_details[`${key}`].rent;
               const { db_year, db_month } = await this.dateFormat(value);
               if (currentYear == db_year) {
-                if (db_month !== currentMonth) {
-                  if (Object.keys(payment_details).length == i + 1) {
-                    if (Object.keys(Late_payment).length) {
-                      Object.keys(Late_payment).forEach(async (key, i) => {
-                        const value = Late_payment[`${key}`].created_date;
-                        const { db_year, db_month } = await this.dateFormat(
-                          value,
-                        );
-                        if (currentYear == db_year) {
-                          if (db_month !== currentMonth) {
-                            if (Object.keys(Late_payment).length == i + 1) {
-                              return this.defaultPayment(customerid.id);
-                            }
-                          }
-                        }
-                      });
-                    } else {
-                      return this.defaultPayment(customerid.id);
+                if (db_month == currentMonth && rent == null) {
+                  if (Object.keys(payment_details).length > i + 1) {
+                    const date = payment_details[i + 1].created_date;
+                    const Rent = payment_details[i + 1].rent;
+                    const { db_year, db_month } = await this.dateFormat(date);
+                    if (db_month == currentMonth && Rent != null) {
+                      return this.delNullPayment(id);
                     }
-                  }
-                } else {
-                  if (db_month == currentMonth && rent == null) {
+                  } else {
                     if (Object.keys(Late_payment).length) {
                       Object.keys(Late_payment).forEach(async (key, i) => {
-                        const value = Late_payment[`${key}`].created_date;
+                        const date = Late_payment[`${key}`].created_date;
                         const { db_year, db_month } = await this.dateFormat(
-                          value,
+                          date,
                         );
                         if (currentYear == db_year) {
                           if (db_month == currentMonth) {
-                            return this.delNullPayment(customerid.id);
+                            if (Object.keys(Late_payment).length == i + 1) {
+                              return this.delNullPayment(id);
+                            }
                           }
                         }
                       });
@@ -90,6 +80,8 @@ export class PaymentDetailsService {
                 }
               }
             });
+          } else {
+            return this.defaultPayment(customerid.id);
           }
         });
       }
@@ -98,14 +90,9 @@ export class PaymentDetailsService {
     }
   }
 
-  async delNullPayment(id: any) {
+  async delNullPayment(value: any) {
     try {
-      return await this.customerRepo
-        .createQueryBuilder('customers')
-        .delete()
-        .from(Customers)
-        .where('id = :id', { id })
-        .execute();
+      return await this.paymentRepo.delete({ id: value });
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }

@@ -19,7 +19,11 @@ import {
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CustomerService } from './customer.service';
-import { CreateCustomerDto, uploadFile } from './dto/create-customer.dto';
+import {
+  CreateCustomerDto,
+  UpdateCustomer,
+  uploadFile,
+} from './dto/create-customer.dto';
 
 @ApiTags('Customer')
 @ApiBearerAuth()
@@ -61,7 +65,13 @@ export class CustomerController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('update')
-  update(@Body() body: any, @Req() req) {
-    return this.customerService.updates(req.user);
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('profile_img'))
+  update(
+    @UploadedFile() files: Express.Multer.File,
+    @Body() body: UpdateCustomer,
+  ) {
+    const data = JSON.parse(JSON.stringify(body));
+    return this.customerService.updates(data, files);
   }
 }

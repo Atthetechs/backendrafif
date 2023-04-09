@@ -89,3 +89,68 @@ export class uploadFile {
   })
   contractFile: string;
 }
+
+export class UpdateCustomer {
+  @ApiProperty()
+  @IsNotEmpty()
+  customer_Id: number;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  firstname: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  lastname: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  nationality_id: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  address: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  company_name: string;
+
+  @ApiProperty({ required: false })
+  price: number;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  country: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  gender: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  phoneNumber?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  mobileNumber: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  email: string;
+
+  @ApiProperty({
+    required: false,
+    type: 'string',
+    format: 'binary',
+    description: 'Profile Image to upload',
+  })
+  profile_img: string;
+
+  // @ApiProperty({
+  //   isArray: true,
+  //   type: 'string',
+  //   format: 'binary',
+  //   description: 'Image file to upload',
+  // })
+  // images: string;
+}

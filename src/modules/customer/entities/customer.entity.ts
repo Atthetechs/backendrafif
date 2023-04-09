@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ContractFiles } from './contractFile.entity';
+import { Images } from './images.entity';
 
 @Entity()
 export class Customers {
@@ -58,8 +59,11 @@ export class Customers {
   @Column()
   profile_img: string;
 
-  @Column({ type: 'text', array: true })
-  images: string[];
+  @OneToMany(() => Images, (contract) => contract.customer, {
+    onDelete: 'CASCADE',
+    eager: true,
+  })
+  images: Images;
 
   @OneToMany(() => ContractFiles, (contract) => contract.customer, {
     onDelete: 'CASCADE',
