@@ -22,7 +22,7 @@ export class PaymentDetailsService {
     return { db_year, db_month };
   }
 
-  @Cron('0 */1 * 1-30 * *')
+  @Cron('0 */1 * 1-30 12 *')
   async checkDate() {
     try {
       const currentMonth = moment().format('MMMM');
@@ -44,7 +44,6 @@ export class PaymentDetailsService {
             .getOne();
 
           const { payment_details, Late_payment } = customerData;
-
           if (Object.keys(payment_details).length) {
             Object.keys(payment_details).forEach(async (key, i) => {
               const value = payment_details[`${key}`].created_date;
@@ -107,7 +106,8 @@ export class PaymentDetailsService {
       createpay.payment_type = null;
       createpay.rent = null;
       createpay.un_paid = true;
-      createpay.bank_id = null;
+      createpay.bank_name = null;
+      createpay.check_no = null;
       createpay.customer = customerData;
       return await this.paymentRepo.save(createpay);
     } catch (err) {
@@ -119,7 +119,8 @@ export class PaymentDetailsService {
     id: any,
     price: any,
     payment_type: string,
-    bank_id: string,
+    check_no: string,
+    bank_name: string,
   ) {
     try {
       const currentDate: any = moment().format('DD');
@@ -134,7 +135,8 @@ export class PaymentDetailsService {
           createPayment.payment_type = payment_type;
           createPayment.paid = true;
           createPayment.rent = price;
-          createPayment.bank_id = bank_id;
+          createPayment.bank_name = bank_name;
+          createPayment.check_no = check_no;
           createPayment.customer = customerData;
           const res = await this.paymentRepo.save(createPayment);
           if (res)
@@ -148,7 +150,8 @@ export class PaymentDetailsService {
           createPayment.payment_type = payment_type;
           createPayment.paid = true;
           createPayment.rent = price;
-          createPayment.bank_id = bank_id;
+          createPayment.bank_name = bank_name;
+          createPayment.check_no = check_no;
           createPayment.customer = customerData;
           const res = await this.latepaymentRepo.save(createPayment);
           if (res)

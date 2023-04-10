@@ -15,7 +15,11 @@ export class PaymentDTO {
   @IsString()
   payment_type: string;
 
-  @ApiProperty({ default: null })
+  @ApiProperty({ required: false })
   @IsString()
-  bank_id: string;
+  bank_name?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  check_no?: string;
 }

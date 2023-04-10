@@ -16,7 +16,10 @@ export class LatePayment {
   payment_type: string;
 
   @Column({ nullable: true })
-  bank_id: string;
+  bank_name: string;
+
+  @Column({ nullable: true })
+  check_no: string;
 
   @Column({ nullable: true, type: 'float' })
   rent: number;

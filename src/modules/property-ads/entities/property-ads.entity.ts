@@ -32,7 +32,7 @@ export class PropertyAds {
   country: string;
 
   @Column()
-  nationality_Id: string;
+  civil_id: string;
 
   @Column()
   propertytype: string;

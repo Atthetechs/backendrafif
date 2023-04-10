@@ -27,7 +27,8 @@ export class PaymentDetailsController {
       body.customer_id,
       body.price,
       body.payment_type,
-      body.bank_id,
+      body.check_no,
+      body.bank_name,
     );
   }
 }

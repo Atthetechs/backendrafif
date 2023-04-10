@@ -33,7 +33,7 @@ export class Customers {
   price: number;
 
   @Column()
-  nationality_id: string;
+  civil_id: string;
 
   @Column()
   country: string;
