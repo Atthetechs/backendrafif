@@ -20,7 +20,7 @@ export class CreateCustomerDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  nationality_id: string;
+  civil_id: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -105,7 +105,7 @@ export class UpdateCustomer {
 
   @ApiProperty({ required: false })
   @IsString()
-  nationality_id: string;
+  civil_id: string;
 
   @ApiProperty({ required: false })
   @IsString()
