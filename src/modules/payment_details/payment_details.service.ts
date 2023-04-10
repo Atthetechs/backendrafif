@@ -22,7 +22,7 @@ export class PaymentDetailsService {
     return { db_year, db_month };
   }
 
-  @Cron('0 */1 * 1-30 12 *')
+  @Cron('0 */1 * 1-30 1-12 *')
   async checkDate() {
     try {
       const currentMonth = moment().format('MMMM');
