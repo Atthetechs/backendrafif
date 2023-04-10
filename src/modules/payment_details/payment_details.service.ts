@@ -4,7 +4,7 @@ import { Customers } from '../customer/entities/customer.entity';
 import { Repository } from 'typeorm';
 import { Payment } from './entities/payment.entity';
 import * as moment from 'moment';
-import { Cron } from '@nestjs/schedule';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { LatePayment } from './entities/late_payment.entity';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class PaymentDetailsService {
     return { db_year, db_month };
   }
 
-  @Cron('0 */1 * 1-30 1-12 *')
+  @Cron('0 */1 * 1-30 */12 *')
   async checkDate() {
     try {
       const currentMonth = moment().format('MMMM');
