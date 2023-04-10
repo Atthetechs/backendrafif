@@ -32,7 +32,7 @@ export class CreatePropertyDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  nationality_Id: string;
+  civil_id: string;
 
   @ApiProperty()
   @IsNotEmpty()
