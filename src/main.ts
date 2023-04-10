@@ -10,7 +10,7 @@ async function bootstrap() {
 
   app.enableCors({
     allowedHeaders: '*',
-    origin: ['http://localhost:3000', 'https://nadid.atthetech.com'],
+    origin: '*',
     methods: 'GET,HEAD,PUT,POST,DELETE',
     credentials: true,
   });
