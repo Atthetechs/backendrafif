@@ -21,7 +21,7 @@ export class PaymentDetailsController {
   // }
 
   @Post('create')
-  @UsePipes(new ValidationPipe({ transform: true }))
+  // @UsePipes(new ValidationPipe({ transform: true }))
   paymentDetail(@Body() body: PaymentDTO) {
     return this.paymentService.createPayment(
       body.customer_id,
