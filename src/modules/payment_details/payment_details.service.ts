@@ -124,13 +124,12 @@ export class PaymentDetailsService {
   ) {
     try {
       const currentDate: any = moment().format('DD');
-      const currentDay: any = moment().format('D');
       const customerData: any = await this.customerRepo.findOne({
         where: { id },
       });
 
       if (customerData) {
-        if (currentDay >= 1 && currentDate < 11) {
+        if (currentDate >= 1 && currentDate < 11) {
           const createPayment = new Payment();
           createPayment.payment_type = payment_type;
           createPayment.paid = true;

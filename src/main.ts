@@ -11,10 +11,11 @@ async function bootstrap() {
   app.enableCors({
     allowedHeaders: '*',
     origin: '*',
-    methods: 'GET,HEAD,PUT,POST,DELETE',
+    methods: 'GET,HEAD,PUT,POST,PATCH,DELETE',
     credentials: true,
   });
 
+  // use for images size
   app.use(json({ limit: '50mb' }));
   app.use(urlencoded({ extended: true, limit: '50mb' }));
 
@@ -22,8 +23,6 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '../views'));
   app.setBaseViewsDir(join(__dirname, '../views'));
   app.setViewEngine('hbs');
-
-  // app.enableCors();
 
   // Swagger Setting
   const config = new DocumentBuilder()
