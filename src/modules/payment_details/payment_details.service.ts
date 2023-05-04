@@ -6,12 +6,15 @@ import { Payment } from './entities/payment.entity';
 import * as moment from 'moment';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { LatePayment } from './entities/late_payment.entity';
+import { PropertyAds } from '../property-ads/entities/property-ads.entity';
 
 @Injectable()
 export class PaymentDetailsService {
   constructor(
     @InjectRepository(Customers) private customerRepo: Repository<Customers>,
     @InjectRepository(Payment) private paymentRepo: Repository<Payment>,
+    @InjectRepository(PropertyAds)
+    private propertyRepo: Repository<PropertyAds>,
     @InjectRepository(LatePayment)
     private latepaymentRepo: Repository<LatePayment>,
   ) {}
@@ -124,42 +127,46 @@ export class PaymentDetailsService {
   ) {
     try {
       const currentDate: any = moment().format('DD');
-      const customerData: any = await this.customerRepo.findOne({
+      const propertyData: any = await this.propertyRepo.findOne({
         where: { id },
       });
 
-      if (customerData) {
-        if (currentDate >= 1 && currentDate < 11) {
-          const createPayment = new Payment();
-          createPayment.payment_type = payment_type;
-          createPayment.paid = true;
-          createPayment.rent = price;
-          createPayment.bank_name = bank_name;
-          createPayment.check_no = check_no;
-          createPayment.customer = customerData;
-          const res = await this.paymentRepo.save(createPayment);
-          if (res)
-            return {
-              status: 200,
-              customer_id: id,
-              message: 'Payment Send Successfully',
-            };
-        } else {
-          const createPayment = new LatePayment();
-          createPayment.payment_type = payment_type;
-          createPayment.paid = true;
-          createPayment.rent = price;
-          createPayment.bank_name = bank_name;
-          createPayment.check_no = check_no;
-          createPayment.customer = customerData;
-          const res = await this.latepaymentRepo.save(createPayment);
-          if (res)
-            return {
-              status: 200,
-              customer_id: id,
-              message: 'Payment Send Successfully',
-            };
-        }
+      const { customers } = propertyData;
+
+      if (customers.length) {
+        customers.forEach(async (value: any) => {
+          if (currentDate >= 1 && currentDate < 11) {
+            const createPayment = new Payment();
+            createPayment.payment_type = payment_type;
+            createPayment.paid = true;
+            createPayment.rent = price;
+            createPayment.bank_name = bank_name;
+            createPayment.check_no = check_no;
+            createPayment.customer = value;
+            const res = await this.paymentRepo.save(createPayment);
+            if (res)
+              return {
+                status: 200,
+                customer_id: id,
+                message: 'Payment Send Successfully',
+              };
+          } else {
+            const createPayment = new LatePayment();
+            createPayment.payment_type = payment_type;
+            createPayment.paid = true;
+            createPayment.rent = price;
+            createPayment.bank_name = bank_name;
+            createPayment.check_no = check_no;
+            createPayment.customer = value;
+            const res = await this.latepaymentRepo.save(createPayment);
+            if (res)
+              return {
+                status: 200,
+                customer_id: id,
+                message: 'Payment Send Successfully',
+              };
+          }
+        });
       } else {
         throw new HttpException('Customer Not Exist', HttpStatus.BAD_REQUEST);
       }

@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Param,
-  Post,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { PaymentDetailsService } from './payment_details.service';
 import { PaymentDTO } from './dto/payment.dto';
 
@@ -24,7 +17,7 @@ export class PaymentDetailsController {
   // @UsePipes(new ValidationPipe({ transform: true }))
   paymentDetail(@Body() body: PaymentDTO) {
     return this.paymentService.createPayment(
-      body.customer_id,
+      body.property_id,
       body.price,
       body.payment_type,
       body.check_no,

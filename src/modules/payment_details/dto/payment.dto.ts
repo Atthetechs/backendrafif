@@ -4,7 +4,7 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 export class PaymentDTO {
   @ApiProperty()
   @IsNotEmpty()
-  customer_id: number;
+  property_id: number;
 
   @ApiProperty()
   @IsNotEmpty()

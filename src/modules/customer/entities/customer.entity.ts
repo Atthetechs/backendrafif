@@ -26,11 +26,14 @@ export class Customers {
   @Column()
   address: string;
 
-  @Column()
+  @Column({ nullable: true })
   company_name: string;
 
-  @Column({ type: 'float' })
+  @Column({ type: 'float', nullable: true })
   price: number;
+
+  @Column({ nullable: true })
+  priceInWords: string;
 
   @Column()
   civil_id: string;
