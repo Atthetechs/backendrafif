@@ -4,7 +4,7 @@ import { Customers } from '../customer/entities/customer.entity';
 import { Repository } from 'typeorm';
 import { Payment } from './entities/payment.entity';
 import * as moment from 'moment';
-import { Cron } from '@nestjs/schedule';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { LatePayment } from './entities/late_payment.entity';
 import { PropertyAds } from '../property-ads/entities/property-ads.entity';
 
@@ -92,6 +92,18 @@ export class PaymentDetailsService {
     }
   }
 
+  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
+  async PaymentCheck() {
+    try {
+      const res = await this.propertyRepo.find();
+      for (let i in res) {
+        await this.PaymentUpdate(res[i].id);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   async delNullPayment(value: any) {
     try {
       return await this.paymentRepo.delete({ id: value });
@@ -135,7 +147,7 @@ export class PaymentDetailsService {
       const { customers } = propertyData;
 
       if (customers.length) {
-        for (let x = 0; x < customers.length; x++) {
+        customers.forEach(async (value: any) => {
           if (currentDate >= 1 && currentDate < 11) {
             const createPayment = new Payment();
             createPayment.payment_type = payment_type;
@@ -145,7 +157,7 @@ export class PaymentDetailsService {
             createPayment.check_no = check_no;
             createPayment.link = link;
             createPayment.link_name = link_name;
-            createPayment.customer = customers[x];
+            createPayment.customer = value;
             const res = await this.paymentRepo.save(createPayment);
             if (res) {
               await this.PaymentUpdate(id);
@@ -164,7 +176,7 @@ export class PaymentDetailsService {
             createPayment.check_no = check_no;
             createPayment.link = link;
             createPayment.link_name = link_name;
-            createPayment.customer = customers[x];
+            createPayment.customer = value;
             const res = await this.latepaymentRepo.save(createPayment);
             if (res) {
               await this.PaymentUpdate(id);
@@ -175,12 +187,70 @@ export class PaymentDetailsService {
               };
             }
           }
-        }
+        });
       } else {
         throw new HttpException('Customer Not Exist', HttpStatus.BAD_REQUEST);
       }
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async update(body: any) {
+    try {
+      const { propert_id } = body;
+      const currentDate: any = moment().format('DD');
+
+      const res = await this.propertyRepo
+        .createQueryBuilder('propertyAds')
+        .where('propertyAds.id =:id', { id: propert_id })
+        .leftJoinAndSelect('propertyAds.customers', 'customers')
+        .leftJoinAndSelect('customers.payment_details', 'payment_details')
+        .leftJoinAndSelect('customers.Late_payment', 'Late_payment')
+        .getOne();
+
+      const { customers } = res;
+      for (let x in customers) {
+        const { payment_details, Late_payment } = customers[x];
+        if (currentDate >= 1 && currentDate < 11) {
+          if (payment_details.length) {
+            for (let i = 0; i < payment_details.length; i++) {
+              if (i == payment_details.length - 1) {
+                const updatePayment = await this.paymentRepo.findOne({
+                  where: { id: payment_details[i].id },
+                });
+                Object.keys(updatePayment).forEach((key) => {
+                  updatePayment[`${key}`] = body[`${key}`];
+                  updatePayment.customer = customers[x];
+                });
+                await this.paymentRepo.save(updatePayment);
+                await this.PaymentUpdate(propert_id);
+                return { status: 200, message: 'Successfully Updated' };
+              }
+            }
+          }
+        } else {
+          if (Late_payment.length) {
+            const late_paymentArr = Late_payment.reverse();
+            for (let i = 0; i < late_paymentArr.length; i++) {
+              if (i == late_paymentArr.length - 1) {
+                const updatePayment = await this.latepaymentRepo.findOne({
+                  where: { id: late_paymentArr[i].id },
+                });
+                Object.keys(updatePayment).forEach((key) => {
+                  updatePayment[`${key}`] = body[`${key}`];
+                  updatePayment.customer = customers[x];
+                });
+                await this.latepaymentRepo.save(updatePayment);
+                await this.PaymentUpdate(propert_id);
+                return { status: 200, message: 'Successfully Updated' };
+              }
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -218,7 +288,6 @@ export class PaymentDetailsService {
                 Object.keys(payment_details).length +
                 Object.keys(Late_payment).length;
               const paymentSum = await this.AllPaymentPlus(allPayments, len);
-              const customerRent = value['price'];
               const createCustomerDate = new Date(
                 JSON.stringify(value['created_at']),
               );
@@ -227,7 +296,10 @@ export class PaymentDetailsService {
                 createCustomerDate,
                 currentFullDate,
               );
-              const total = paymentSum - month * customerRent;
+              const adminCustomer: any = await this.PriceOneCustomer(id); // only catch customer which price is not null or NaN
+              console.log(adminCustomer);
+              const monthMultiply = month + 1 * adminCustomer[0].price;
+              const total = paymentSum - monthMultiply;
               await this.customerUpdate(total, value[key]);
             }
           });
@@ -256,7 +328,7 @@ export class PaymentDetailsService {
         await this.customerRepo
           .createQueryBuilder('customers')
           .update()
-          .set({ advance_balance: balnce })
+          .set({ advance_balance: balnce, remaining_balnce: 0 })
           .where('id = :id', { id: id })
           .execute();
       }
@@ -272,6 +344,30 @@ export class PaymentDetailsService {
         allnumber += val;
       });
       return allnumber;
+    }
+  }
+
+  async PriceOneCustomer(id: number) {
+    try {
+      const propertyData: any = await this.propertyRepo.findOne({
+        where: { id },
+      });
+      const { customers } = propertyData;
+      const adminCustomer = [];
+      for (let x in customers) {
+        Object.keys(customers[x]).forEach((key) => {
+          if (
+            key == 'price' &&
+            customers[x][key] != null &&
+            !Number.isNaN(customers[x][key])
+          ) {
+            adminCustomer.push(customers[x]);
+          }
+        });
+      }
+      return adminCustomer;
+    } catch (err) {
+      console.log(err);
     }
   }
 

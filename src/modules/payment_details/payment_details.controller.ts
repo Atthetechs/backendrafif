@@ -1,6 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Patch, Post } from '@nestjs/common';
 import { PaymentDetailsService } from './payment_details.service';
-import { PaymentDTO } from './dto/payment.dto';
+import { PaymentDTO, PaymentUpdate } from './dto/payment.dto';
 
 @Controller('payment')
 export class PaymentDetailsController {
@@ -25,5 +25,19 @@ export class PaymentDetailsController {
       body.link_name,
       body.link,
     );
+  }
+
+  // {
+  //   propert_id: 21,
+  //   price: 30000,
+  //   payment_type: 'cash',
+  //   bank_name: 'string',
+  //   check_no: 'string',
+  //   link_name: 'string',
+  //   link: 'string'
+  // }
+  @Patch('update')
+  paymentUpdate(@Body() body: PaymentUpdate) {
+    return this.paymentService.update(body);
   }
 }

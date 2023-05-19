@@ -104,34 +104,34 @@ export class UpdateCustomer {
 
   @ApiProperty({ required: false })
   @IsString()
-  firstname: string;
+  firstname?: string;
 
   @ApiProperty({ required: false })
   @IsString()
-  lastname: string;
+  lastname?: string;
 
   @ApiProperty({ required: false })
   @IsString()
-  civil_id: string;
+  civil_id?: string;
 
   @ApiProperty({ required: false })
   @IsString()
-  address: string;
+  address?: string;
 
   @ApiProperty({ required: false })
   @IsString()
-  company_name: string;
+  company_name?: string;
 
   @ApiProperty({ required: false })
-  price: number;
-
-  @ApiProperty({ required: false })
-  @IsString()
-  country: string;
+  price?: number;
 
   @ApiProperty({ required: false })
   @IsString()
-  gender: string;
+  country?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  gender?: string;
 
   @ApiProperty({ required: false })
   @IsString()
@@ -139,15 +139,19 @@ export class UpdateCustomer {
 
   @ApiProperty({ required: false })
   @IsString()
-  mobileNumber: string;
+  mobileNumber?: string;
 
   @ApiProperty({ required: false })
   @IsString()
-  email: string;
+  email?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  created_at?: string;
 
   @ApiProperty({ required: false })
   @IsBoolean()
-  active: boolean;
+  active?: boolean;
 
   @ApiProperty({
     required: false,
@@ -155,7 +159,7 @@ export class UpdateCustomer {
     format: 'binary',
     description: 'Profile Image to upload',
   })
-  profile_img: string;
+  profile_img?: string;
 
   // @ApiProperty({
   //   isArray: true,
