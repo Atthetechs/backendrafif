@@ -22,4 +22,12 @@ export class PaymentDTO {
   @ApiProperty({ required: false })
   @IsString()
   check_no?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  link_name?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  link?: string;
 }

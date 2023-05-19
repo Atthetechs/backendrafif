@@ -74,4 +74,14 @@ export class CustomerController {
     const data = JSON.parse(JSON.stringify(body));
     return this.customerService.updates(data, files);
   }
+
+  // @UseGuards(JwtAuthGuard)
+  @Patch('non-active/:actives/:propertyid')
+  // @ApiConsumes('multipart/form-data')
+  NonActive(
+    @Param('propertyid') propertyid: number,
+    @Param('actives') actives: boolean,
+  ) {
+    return this.customerService.findAll(propertyid, actives);
+  }
 }

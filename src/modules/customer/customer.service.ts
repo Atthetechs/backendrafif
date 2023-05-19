@@ -6,7 +6,7 @@ import { S3ImageUpload } from '../s3Bucket/s3.service';
 import { Customers } from './entities/customer.entity';
 import { ContractFiles } from './entities/contractFile.entity';
 import { Images } from './entities/images.entity';
-// import { Payment } from '../payment_details/entities/payment.entity';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class CustomerService {
@@ -16,9 +16,46 @@ export class CustomerService {
     @InjectRepository(ContractFiles)
     private contractRepo: Repository<ContractFiles>,
     @InjectRepository(Images) private imagesRepo: Repository<Images>,
-    // @InjectRepository(Payment) private payment: Repository<Payment>,
     @Inject('BUCKET') private readonly bucket: S3ImageUpload,
   ) {}
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async ExpireCustomer() {
+    try {
+      const allcustomerData: any = await this.customerRepo
+        .createQueryBuilder('customers')
+        .getMany();
+
+      if (allcustomerData.length) {
+        allcustomerData.forEach(async (el: any) => {
+          let createdDate = new Date(JSON.stringify(el.created_at));
+          const currentDate = new Date();
+          const days = await this.DaysBetweenTwoDates(createdDate, currentDate);
+          if (days == 365 || days > 365) {
+            await this.customerRepo
+              .createQueryBuilder('customers')
+              .update()
+              .set({ active: false })
+              .where('id = :id', { id: el.id })
+              .execute();
+          }
+        });
+      }
+    } catch (err) {
+      return { status: 400, message: 'Expire Customer Error' };
+    }
+  }
+
+  async DaysBetweenTwoDates(createdDate: any, currentDate: any) {
+    try {
+      const ONE_DAY = 1000 * 60 * 60 * 24;
+      const differenceMs = Math.abs(createdDate - currentDate);
+      // Convert back to days and return
+      return Math.round(differenceMs / ONE_DAY);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
 
   async create(data: any, file: any, profile_img: any) {
     try {
@@ -120,6 +157,40 @@ export class CustomerService {
       }
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async findAll(propertyid: number, actives: boolean) {
+    try {
+      const property: any = await this.propertyAd
+        .createQueryBuilder('propertyAds')
+        .where('propertyAds.id =:id', { id: propertyid })
+        .leftJoinAndSelect('propertyAds.customers', 'customers')
+        .getOne();
+
+      const { customers } = property;
+      if (customers.length) {
+        let updatedResult = [];
+        for (let i = 0; i < customers.length; i++) {
+          const res = await this.customerRepo
+            .createQueryBuilder('customers')
+            .update()
+            .set({ active: actives })
+            .where('id = :id', { id: customers[i].id })
+            .execute();
+
+          updatedResult.push(res.affected);
+        }
+        if (updatedResult.length == customers.length)
+          return { status: 200, messsage: 'Successfully Updated' };
+      } else {
+        return { status: 400, messsage: 'Plz Customers Created' };
+      }
+    } catch (err) {
+      throw new HttpException(
+        'Error in non-active API',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 }

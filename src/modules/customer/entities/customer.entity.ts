@@ -3,7 +3,6 @@ import { Payment } from 'src/modules/payment_details/entities/payment.entity';
 import { PropertyAds } from 'src/modules/property-ads/entities/property-ads.entity';
 import {
   Column,
-  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -14,6 +13,9 @@ import { Images } from './images.entity';
 
 @Entity()
 export class Customers {
+  forEach(arg0: (val: any) => void) {
+    throw new Error('Method not implemented.');
+  }
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -56,8 +58,17 @@ export class Customers {
   @Column({ nullable: true })
   grace_days: string;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @Column()
+  created_at: string;
+
+  @Column({ default: true, type: 'boolean' })
+  active: boolean;
+
+  @Column({ nullable: true, type: 'float' })
+  remaining_balnce: number;
+
+  @Column({ nullable: true, type: 'float' })
+  advance_balance: number;
 
   @Column()
   profile_img: string;

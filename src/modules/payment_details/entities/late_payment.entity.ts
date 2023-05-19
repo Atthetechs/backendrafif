@@ -30,6 +30,12 @@ export class LatePayment {
   @Column({ default: false })
   un_paid: boolean;
 
+  @Column({ nullable: true })
+  link_name: string;
+
+  @Column({ nullable: true })
+  link: string;
+
   @CreateDateColumn()
   created_date: Date;
 

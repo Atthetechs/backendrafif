@@ -22,6 +22,8 @@ export class PaymentDetailsController {
       body.payment_type,
       body.check_no,
       body.bank_name,
+      body.link_name,
+      body.link,
     );
   }
 }

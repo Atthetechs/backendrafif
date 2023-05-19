@@ -4,7 +4,7 @@ import { Customers } from '../customer/entities/customer.entity';
 import { Repository } from 'typeorm';
 import { Payment } from './entities/payment.entity';
 import * as moment from 'moment';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 import { LatePayment } from './entities/late_payment.entity';
 import { PropertyAds } from '../property-ads/entities/property-ads.entity';
 
@@ -106,12 +106,11 @@ export class PaymentDetailsService {
         where: { id },
       });
       const createpay = new Payment();
-      createpay.payment_type = null;
-      createpay.rent = null;
-      createpay.un_paid = true;
-      createpay.bank_name = null;
-      createpay.check_no = null;
-      createpay.customer = customerData;
+      Object.keys(createpay).forEach((key) => {
+        createpay[`${key}`] = null;
+        createpay.un_paid = true;
+        createpay.customer = customerData;
+      });
       return await this.paymentRepo.save(createpay);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
@@ -124,6 +123,8 @@ export class PaymentDetailsService {
     payment_type: string,
     check_no: string,
     bank_name: string,
+    link_name: string,
+    link: string,
   ) {
     try {
       const currentDate: any = moment().format('DD');
@@ -134,7 +135,7 @@ export class PaymentDetailsService {
       const { customers } = propertyData;
 
       if (customers.length) {
-        customers.forEach(async (value: any) => {
+        for (let x = 0; x < customers.length; x++) {
           if (currentDate >= 1 && currentDate < 11) {
             const createPayment = new Payment();
             createPayment.payment_type = payment_type;
@@ -142,14 +143,18 @@ export class PaymentDetailsService {
             createPayment.rent = price;
             createPayment.bank_name = bank_name;
             createPayment.check_no = check_no;
-            createPayment.customer = value;
+            createPayment.link = link;
+            createPayment.link_name = link_name;
+            createPayment.customer = customers[x];
             const res = await this.paymentRepo.save(createPayment);
-            if (res)
+            if (res) {
+              await this.PaymentUpdate(id);
               return {
                 status: 200,
                 customer_id: id,
                 message: 'Payment Send Successfully',
               };
+            }
           } else {
             const createPayment = new LatePayment();
             createPayment.payment_type = payment_type;
@@ -157,21 +162,124 @@ export class PaymentDetailsService {
             createPayment.rent = price;
             createPayment.bank_name = bank_name;
             createPayment.check_no = check_no;
-            createPayment.customer = value;
+            createPayment.link = link;
+            createPayment.link_name = link_name;
+            createPayment.customer = customers[x];
             const res = await this.latepaymentRepo.save(createPayment);
-            if (res)
+            if (res) {
+              await this.PaymentUpdate(id);
               return {
                 status: 200,
                 customer_id: id,
                 message: 'Payment Send Successfully',
               };
+            }
           }
-        });
+        }
       } else {
         throw new HttpException('Customer Not Exist', HttpStatus.BAD_REQUEST);
       }
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
+  }
+
+  // customer rent * month and then minus from allpayments
+  async PaymentUpdate(id: any) {
+    try {
+      const propertyData: any = await this.propertyRepo.findOne({
+        where: { id },
+      });
+      const { customers } = propertyData;
+
+      if (customers.length) {
+        customers.forEach(async (value: any) => {
+          Object.keys(value).forEach(async (key) => {
+            const allPayments = [];
+            if (key == 'id') {
+              const customerData = await this.customerRepo.findOne({
+                where: { id: value[key] },
+                relations: { Late_payment: true, payment_details: true },
+              });
+              const { payment_details, Late_payment } = customerData;
+              if (Object.keys(payment_details).length) {
+                Object.keys(payment_details).forEach((key) => {
+                  const rent = payment_details[`${key}`].rent;
+                  allPayments.push(rent);
+                });
+              }
+              if (Object.keys(Late_payment).length) {
+                Object.keys(Late_payment).forEach((key) => {
+                  const rent = Late_payment[`${key}`].rent;
+                  allPayments.push(rent);
+                });
+              }
+              const len =
+                Object.keys(payment_details).length +
+                Object.keys(Late_payment).length;
+              const paymentSum = await this.AllPaymentPlus(allPayments, len);
+              const customerRent = value['price'];
+              const createCustomerDate = new Date(
+                JSON.stringify(value['created_at']),
+              );
+              const currentFullDate = new Date();
+              const month = await this.getMonthDifference(
+                createCustomerDate,
+                currentFullDate,
+              );
+              const total = paymentSum - month * customerRent;
+              await this.customerUpdate(total, value[key]);
+            }
+          });
+        });
+      } else {
+        throw new HttpException('Customer Not Exist', HttpStatus.BAD_REQUEST);
+      }
+    } catch (err) {
+      throw new HttpException(
+        'Error in Remaining Balance',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async customerUpdate(balnce: any, id: number) {
+    try {
+      if (balnce < 0) {
+        await this.customerRepo
+          .createQueryBuilder('customers')
+          .update()
+          .set({ remaining_balnce: balnce })
+          .where('id = :id', { id: id })
+          .execute();
+      } else {
+        await this.customerRepo
+          .createQueryBuilder('customers')
+          .update()
+          .set({ advance_balance: balnce })
+          .where('id = :id', { id: id })
+          .execute();
+      }
+    } catch (err) {
+      throw new HttpException('Error Payment Update', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async AllPaymentPlus(payments: any, len: number) {
+    let allnumber = 0;
+    if (payments.length == len) {
+      payments.forEach((val: any) => {
+        allnumber += val;
+      });
+      return allnumber;
+    }
+  }
+
+  async getMonthDifference(startDate: any, endDate: any) {
+    return (
+      endDate.getMonth() -
+      startDate.getMonth() +
+      12 * (endDate.getFullYear() - startDate.getFullYear())
+    );
   }
 }

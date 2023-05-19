@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateCustomerDto {
   @ApiProperty()
@@ -65,6 +65,11 @@ export class CreateCustomerDto {
   @ApiProperty({ required: false })
   @IsString()
   grace_days?: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  created_at: string;
 
   @ApiProperty({
     type: 'string',
@@ -139,6 +144,10 @@ export class UpdateCustomer {
   @ApiProperty({ required: false })
   @IsString()
   email: string;
+
+  @ApiProperty({ required: false })
+  @IsBoolean()
+  active: boolean;
 
   @ApiProperty({
     required: false,
