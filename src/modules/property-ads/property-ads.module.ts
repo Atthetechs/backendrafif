@@ -6,9 +6,11 @@ import { S3ImageUpload } from '../s3Bucket/s3.service';
 import { PropertyAds } from './entities/property-ads.entity';
 import { PropertyAdsController } from './property-ads.controller';
 import { PropertyAdsService } from './property-ads.service';
+import { ShopFields } from './entities/property-ads-shopfiled.entity';
+import { BuildingFields } from './entities/property-ads-buildingfield.entity';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([PropertyAds]),
+    TypeOrmModule.forFeature([PropertyAds, ShopFields, BuildingFields]),
     MulterModule.register({
       dest: './public',
     }),

@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Get,
+  Param,
   Post,
   Req,
   UploadedFiles,
@@ -39,5 +41,10 @@ export class PropertyAdsController {
       images,
       req.user,
     );
+  }
+
+  @Get('inputField')
+  async find() {
+    return this.propertyService.find();
   }
 }

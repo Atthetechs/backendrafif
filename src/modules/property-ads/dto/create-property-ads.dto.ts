@@ -1,6 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
+export enum BuildingRole {
+  Address = 'Address',
+  Area = 'Area',
+}
+export enum ShopeRole {
+  Sqfeet = 'sqfeet',
+  ShopNo = 'shopNo',
+  PaciNo = 'Paci_no',
+  Address = 'address',
+}
+export enum UserRole {
+  Building = 'building',
+  Shop = 'shop',
+}
+
 export class CreatePropertyDto {
   @ApiProperty()
   @IsNotEmpty()
@@ -52,31 +67,17 @@ export class CreatePropertyDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  block_No: string;
+  building_name: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  plot_No: string;
+  shop_No: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  building_No: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  street_No: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  town: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  price: number;
+  paci_No: string;
 
   @ApiProperty({
     isArray: true,

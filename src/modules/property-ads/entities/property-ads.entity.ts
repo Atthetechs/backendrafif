@@ -44,22 +44,13 @@ export class PropertyAds {
   address: string;
 
   @Column()
-  block_No: string;
+  building_name: string;
 
   @Column()
-  plot_No: string;
+  shop_No: string;
 
-  @Column()
-  building_No: string;
-
-  @Column()
-  street_No: string;
-
-  @Column()
-  town: string;
-
-  @Column({ type: 'float' })
-  price: number;
+  @Column({ nullable: true })
+  paci_No: string;
 
   @Column({ type: 'text', array: true, nullable: true })
   images: string[];

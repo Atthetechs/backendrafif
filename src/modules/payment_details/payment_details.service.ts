@@ -218,8 +218,9 @@ export class PaymentDetailsService {
               if (i == payment_details.length - 1) {
                 const updatePayment = await this.paymentRepo.findOne({
                   where: { id: payment_details[i].id },
+                  order: { id: 'ASC' },
                 });
-                Object.keys(updatePayment).forEach((key) => {
+                Object.keys(body).forEach((key) => {
                   updatePayment[`${key}`] = body[`${key}`];
                   updatePayment.customer = customers[x];
                 });
@@ -231,13 +232,14 @@ export class PaymentDetailsService {
           }
         } else {
           if (Late_payment.length) {
-            const late_paymentArr = Late_payment.reverse();
+            const late_paymentArr = Late_payment;
             for (let i = 0; i < late_paymentArr.length; i++) {
               if (i == late_paymentArr.length - 1) {
                 const updatePayment = await this.latepaymentRepo.findOne({
                   where: { id: late_paymentArr[i].id },
+                  order: { id: 'ASC' },
                 });
-                Object.keys(updatePayment).forEach((key) => {
+                Object.keys(body).forEach((key) => {
                   updatePayment[`${key}`] = body[`${key}`];
                   updatePayment.customer = customers[x];
                 });
@@ -297,9 +299,10 @@ export class PaymentDetailsService {
                 currentFullDate,
               );
               const adminCustomer: any = await this.PriceOneCustomer(id); // only catch customer which price is not null or NaN
-              console.log(adminCustomer);
               const monthMultiply = month + 1 * adminCustomer[0].price;
               const total = paymentSum - monthMultiply;
+              // console.log(paymentSum, 'sum payment', monthMultiply, 'month');
+              // console.log(total, 'total');
               await this.customerUpdate(total, value[key]);
             }
           });
