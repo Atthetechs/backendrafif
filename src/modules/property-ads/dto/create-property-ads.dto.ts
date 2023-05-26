@@ -5,12 +5,14 @@ export enum BuildingRole {
   Address = 'address',
   Area = 'area',
 }
+
 export enum ShopeRole {
   Area = 'area',
   ShopNo = 'shop_No',
   PaciNo = 'paci_No',
   Address = 'address',
 }
+
 export enum UserRole {
   Building = 'building',
   Shop = 'shop',
@@ -54,30 +56,25 @@ export class CreatePropertyDto {
   @IsString()
   propertytype: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
   @IsString()
-  area: string;
+  area?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
   @IsString()
-  address: string;
+  address?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
   @IsString()
-  building_name: string;
+  building_name?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
   @IsString()
-  shop_No: string;
+  shop_No?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
   @IsString()
-  paci_No: string;
+  paci_No?: string;
 
   @ApiProperty({
     isArray: true,

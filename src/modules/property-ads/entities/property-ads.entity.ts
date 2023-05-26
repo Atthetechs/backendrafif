@@ -37,16 +37,16 @@ export class PropertyAds {
   @Column()
   propertytype: string;
 
-  @Column()
+  @Column({ nullable: true })
   area: string;
 
-  @Column()
+  @Column({ nullable: true })
   address: string;
 
-  @Column()
+  @Column({ nullable: true })
   building_name: string;
 
-  @Column()
+  @Column({ nullable: true })
   shop_No: string;
 
   @Column({ nullable: true })
