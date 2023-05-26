@@ -9,5 +9,5 @@ export class BuildingFields {
   property_type: string;
 
   @Column('jsonb')
-  Buildingfields: string[];
+  fields: string[];
 }

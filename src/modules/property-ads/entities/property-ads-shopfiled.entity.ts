@@ -9,5 +9,5 @@ export class ShopFields {
   property_type: string;
 
   @Column('jsonb')
-  Shopfields: string[];
+  fields: string[];
 }

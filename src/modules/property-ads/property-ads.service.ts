@@ -67,7 +67,7 @@ export class PropertyAdsService {
           .values([
             {
               property_type: name,
-              Buildingfields: final,
+              fields: final,
             },
           ])
           .execute();
@@ -79,7 +79,7 @@ export class PropertyAdsService {
           .values([
             {
               property_type: name,
-              Shopfields: final,
+              fields: final,
             },
           ])
           .execute();
