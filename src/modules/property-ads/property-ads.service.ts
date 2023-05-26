@@ -116,10 +116,10 @@ export class PropertyAdsService {
         },
         {
           label: {
-            name_en: 'Square Feet',
-            name_ar: 'قدم مكعب',
+            name_en: 'Area',
+            name_ar: 'منطقة',
           },
-          name: ShopeRole.Sqfeet,
+          name: ShopeRole.Area,
         },
       ];
       const arrayname = [

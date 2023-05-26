@@ -2,13 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export enum BuildingRole {
-  Address = 'Address',
-  Area = 'Area',
+  Address = 'address',
+  Area = 'area',
 }
 export enum ShopeRole {
-  Sqfeet = 'sqfeet',
-  ShopNo = 'shopNo',
-  PaciNo = 'Paci_no',
+  Area = 'area',
+  ShopNo = 'shop_No',
+  PaciNo = 'paci_No',
   Address = 'address',
 }
 export enum UserRole {
