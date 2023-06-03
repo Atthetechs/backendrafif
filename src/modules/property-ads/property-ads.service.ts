@@ -5,14 +5,17 @@ import { S3ImageUpload } from '../s3Bucket/s3.service';
 import { PropertyAds } from './entities/property-ads.entity';
 import { BuildingFields } from './entities/property-ads-buildingfield.entity';
 import { ShopFields } from './entities/property-ads-shopfiled.entity';
-import { BuildingRole } from './dto/create-property-ads.dto';
+import { BuildingRole, UpdateProperty } from './dto/create-property-ads.dto';
 import { ShopeRole } from './dto/create-property-ads.dto';
+import { Customers } from '../customer/entities/customer.entity';
 
 @Injectable()
 export class PropertyAdsService {
   constructor(
     @InjectRepository(PropertyAds)
     private propertyRepo: Repository<PropertyAds>,
+    @InjectRepository(Customers)
+    private customerRepo: Repository<Customers>,
     @InjectRepository(BuildingFields)
     private buildingRepo: Repository<BuildingFields>,
     @InjectRepository(ShopFields)
@@ -26,18 +29,18 @@ export class PropertyAdsService {
         ? await this.bucket.upload(images)
         : [];
 
-      const data = new PropertyAds();
+      const data: any = new PropertyAds();
       Object.keys(dataa).forEach((key) => {
         data[`${key}`] = dataa[`${key}`];
         data.images = response;
         data.user = user;
       });
+
       const save = await this.propertyRepo.save(data);
       if (save) {
         return {
           message: 'Created Successfully',
           property_Id: save.id,
-          // url: `${process.env.BACKEND_URL}/user/contractFile/${save.id}`,
         };
       }
     } catch (err) {
@@ -160,6 +163,44 @@ export class PropertyAdsService {
       }
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async update(body: UpdateProperty) {
+    try {
+      const property = await this.propertyRepo.findOne({
+        where: { id: +body.property_id },
+      });
+      if (property) {
+        await this.propertyRepo.delete({ id: +body.property_id });
+
+        const customerUpdate: any = await this.customerRepo.find({
+          where: { id: +body.customer_id },
+        });
+
+        const res: any = new PropertyAds();
+        Object.keys(property).forEach((key) => {
+          res[`${key}`] = property[`${key}`];
+          res.customers = [customerUpdate[0]];
+        });
+
+        await this.propertyRepo.save(res);
+
+        const result = await this.customerRepo.update(
+          { id: +body.customer_id },
+          { price: +body.rent },
+        );
+        if (result.affected) {
+          return { status: 200, message: 'Update Property' };
+        } else {
+          return { status: 400, message: 'Error Update Property' };
+        }
+      }
+    } catch (err) {
+      throw new HttpException(
+        'Error in Code updateProperty',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 }

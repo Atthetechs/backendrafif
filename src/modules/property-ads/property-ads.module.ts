@@ -8,9 +8,15 @@ import { PropertyAdsController } from './property-ads.controller';
 import { PropertyAdsService } from './property-ads.service';
 import { ShopFields } from './entities/property-ads-shopfiled.entity';
 import { BuildingFields } from './entities/property-ads-buildingfield.entity';
+import { Customers } from '../customer/entities/customer.entity';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([PropertyAds, ShopFields, BuildingFields]),
+    TypeOrmModule.forFeature([
+      PropertyAds,
+      ShopFields,
+      BuildingFields,
+      Customers,
+    ]),
     MulterModule.register({
       dest: './public',
     }),

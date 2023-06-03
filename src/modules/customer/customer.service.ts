@@ -71,12 +71,12 @@ export class CustomerService {
           profile_img.length &&
           (await this.bucket.singleImageUpload(profile_img[0]));
 
-        const res = new Customers();
+        const res: any = new Customers();
         Object.keys(result).forEach((key) => {
           res[`${key}`] =
             key == 'price' ? parseInt(result[`${key}`]) : result[`${key}`];
           res.profile_img = profilepic;
-          res.propertyAds = propertyAd;
+          res.propertyAds = [propertyAd];
         });
 
         const respo = await this.customerRepo.save(res);

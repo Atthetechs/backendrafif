@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Req,
   UploadedFiles,
@@ -14,7 +15,10 @@ import {
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CreatePropertyDto } from './dto/create-property-ads.dto';
+import {
+  CreatePropertyDto,
+  UpdateProperty,
+} from './dto/create-property-ads.dto';
 import { PropertyAdsService } from './property-ads.service';
 
 @ApiTags('Property')
@@ -46,5 +50,10 @@ export class PropertyAdsController {
   @Get('inputField')
   async find() {
     return this.propertyService.find();
+  }
+
+  @Patch('/addMoreProperty')
+  update(@Body() body: UpdateProperty) {
+    return this.propertyService.update(body);
   }
 }

@@ -4,6 +4,7 @@ import { PropertyAds } from 'src/modules/property-ads/entities/property-ads.enti
 import {
   Column,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -13,9 +14,6 @@ import { Images } from './images.entity';
 
 @Entity()
 export class Customers {
-  forEach(arg0: (val: any) => void) {
-    throw new Error('Method not implemented.');
-  }
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -84,8 +82,13 @@ export class Customers {
   })
   contractFiles: ContractFiles;
 
-  @ManyToOne(() => PropertyAds, (property) => property.customers)
-  propertyAds: PropertyAds;
+  // @ManyToOne(() => PropertyAds, (property) => property.customers)
+  // propertyAds: PropertyAds;
+  @ManyToMany(() => PropertyAds, (property) => property.customers, {
+    eager: true,
+    cascade: true,
+  })
+  propertyAds: PropertyAds[];
 
   @OneToMany(() => Payment, (payment) => payment.customer, {
     onDelete: 'CASCADE',

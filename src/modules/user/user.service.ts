@@ -22,16 +22,30 @@ export class UserService {
 
   async finduser(user: any) {
     try {
-      const result = await this.userRepo
-        .createQueryBuilder('user')
-        .where('user.email = :email', { email: user.email })
-        .leftJoinAndSelect('user.propertyAds', 'propertyAds')
-        .leftJoinAndSelect('propertyAds.customers', 'customers')
-        .leftJoinAndSelect('customers.images', 'images')
-        .leftJoinAndSelect('customers.contractFiles', 'contractFiles')
-        .leftJoinAndSelect('customers.payment_details', 'payment_details')
-        .leftJoinAndSelect('customers.Late_payment', 'Late_payment')
-        .getOne();
+      // const result = await this.userRepo
+      //   .createQueryBuilder('user')
+      //   .where('user.email = :email', { email: user.email })
+      //   .leftJoinAndSelect('user.propertyAds', 'propertyAds')
+      //   .leftJoinAndSelect('propertyAds.customers', 'customers')
+      //   .leftJoinAndSelect('customers.images', 'images')
+      //   .leftJoinAndSelect('customers.contractFiles', 'contractFiles')
+      //   .leftJoinAndSelect('customers.payment_details', 'payment_details')
+      //   .leftJoinAndSelect('customers.Late_payment', 'Late_payment')
+      //   .getOne();
+
+      const result = await this.userRepo.findOne({
+        where: { email: user.email },
+        relations: {
+          propertyAds: {
+            customers: {
+              propertyAds: true,
+              contractFiles: true,
+              payment_details: true,
+              Late_payment: true,
+            },
+          },
+        },
+      });
 
       const allresp: any = await this.userRepo
         .createQueryBuilder('user')

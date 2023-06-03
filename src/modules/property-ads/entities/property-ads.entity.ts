@@ -3,6 +3,8 @@ import { User } from 'src/modules/user/entities/user.entity';
 import {
   Column,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -55,10 +57,13 @@ export class PropertyAds {
   @Column({ type: 'text', array: true, nullable: true })
   images: string[];
 
-  @OneToMany(() => Customers, (customer) => customer.propertyAds, {
-    eager: true,
-    onDelete: 'CASCADE',
-  })
+  // @OneToMany(() => Customers, (customer) => customer.propertyAds, {
+  //   eager: true,
+  //   onDelete: 'CASCADE',
+  // })
+  // customers: Customers;
+  @ManyToMany(() => Customers, (customer) => customer.propertyAds)
+  @JoinTable()
   customers: Customers;
 
   @ManyToOne(() => User, (user) => user.propertyAds)

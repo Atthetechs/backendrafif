@@ -211,7 +211,7 @@ export class PaymentDetailsService {
 
       const { customers } = res;
       for (let x in customers) {
-        const { payment_details, Late_payment } = customers[x];
+        const { payment_details, Late_payment } = customers[x] as any;
         if (currentDate >= 1 && currentDate < 11) {
           if (payment_details.length) {
             for (let i = 0; i < payment_details.length; i++) {

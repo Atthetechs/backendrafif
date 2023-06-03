@@ -19,6 +19,10 @@ export enum UserRole {
 }
 
 export class CreatePropertyDto {
+  @ApiProperty({ required: false })
+  @IsString()
+  customerId?: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
@@ -83,4 +87,18 @@ export class CreatePropertyDto {
     description: 'Image file to upload',
   })
   images: string;
+}
+
+export class UpdateProperty {
+  @ApiProperty()
+  @IsString()
+  property_id: string;
+
+  @ApiProperty()
+  @IsString()
+  customer_id: string;
+
+  @ApiProperty()
+  @IsString()
+  rent: string;
 }
