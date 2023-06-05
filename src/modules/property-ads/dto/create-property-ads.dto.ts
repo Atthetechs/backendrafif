@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
+  IsIn,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 
 export enum BuildingRole {
   Address = 'address',
@@ -101,4 +109,89 @@ export class UpdateProperty {
   @ApiProperty()
   @IsString()
   rent: string;
+}
+
+export class CreateCustomer {
+  @ApiProperty({ isArray: true, required: false })
+  @IsString({ each: true })
+  property_Id?: string[];
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  firstname: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  lastname: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  civil_id: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  address: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  company_name?: string;
+
+  @ApiProperty({ required: false })
+  price?: number;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  priceInWords?: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  country: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  gender: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  phoneNumber?: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  mobileNumber: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  email: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  grace_days?: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  created_at: string;
+
+  @ApiProperty({
+    type: 'string',
+    format: 'binary',
+    description: 'Profile Image to upload',
+  })
+  profile_img: string;
+
+  @ApiProperty({
+    isArray: true,
+    type: 'string',
+    format: 'binary',
+    description: 'Image file to upload',
+  })
+  images: string;
 }

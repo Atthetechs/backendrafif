@@ -7,6 +7,7 @@ import { Customers } from './entities/customer.entity';
 import { ContractFiles } from './entities/contractFile.entity';
 import { Images } from './entities/images.entity';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { CustomerProperty } from './entities/customer-property.entity';
 
 @Injectable()
 export class CustomerService {
@@ -15,6 +16,8 @@ export class CustomerService {
     @InjectRepository(PropertyAds) private propertyAd: Repository<PropertyAds>,
     @InjectRepository(ContractFiles)
     private contractRepo: Repository<ContractFiles>,
+    @InjectRepository(CustomerProperty)
+    private customer_property_Repo: Repository<CustomerProperty>,
     @InjectRepository(Images) private imagesRepo: Repository<Images>,
     @Inject('BUCKET') private readonly bucket: S3ImageUpload,
   ) {}
@@ -63,7 +66,6 @@ export class CustomerService {
       const propertyAd = await this.propertyAd.findOne({
         where: { id: property_Id },
       });
-
       if (propertyAd) {
         const response: any = file.length && (await this.bucket.upload(file));
 
@@ -76,7 +78,7 @@ export class CustomerService {
           res[`${key}`] =
             key == 'price' ? parseInt(result[`${key}`]) : result[`${key}`];
           res.profile_img = profilepic;
-          res.propertyAds = [propertyAd];
+          res.propertyAds = propertyAd;
         });
 
         const respo = await this.customerRepo.save(res);
@@ -162,16 +164,33 @@ export class CustomerService {
 
   async findAll(propertyid: number, actives: boolean) {
     try {
+      await this.propertyAd.update({ id: propertyid }, { rented: actives });
+
       const property: any = await this.propertyAd
         .createQueryBuilder('propertyAds')
         .where('propertyAds.id =:id', { id: propertyid })
         .leftJoinAndSelect('propertyAds.customers', 'customers')
+        .leftJoinAndSelect(
+          'customers.customer_properties',
+          'customer_properties',
+        )
         .getOne();
 
       const { customers } = property;
       if (customers.length) {
         let updatedResult = [];
         for (let i = 0; i < customers.length; i++) {
+          const customerProperty = customers[i].customer_properties;
+          if (customerProperty.length) {
+            for (let x = 0; x < customerProperty.length; x++) {
+              await this.customer_property_Repo
+                .createQueryBuilder('customer_properties')
+                .update()
+                .set({ rented: actives })
+                .where('id = :id', { id: customerProperty[x].id })
+                .execute();
+            }
+          }
           const res = await this.customerRepo
             .createQueryBuilder('customers')
             .update()

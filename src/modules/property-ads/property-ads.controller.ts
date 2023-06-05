@@ -16,6 +16,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
+  CreateCustomer,
   CreatePropertyDto,
   UpdateProperty,
 } from './dto/create-property-ads.dto';
@@ -55,5 +56,22 @@ export class PropertyAdsController {
   @Patch('/addMoreProperty')
   update(@Body() body: UpdateProperty) {
     return this.propertyService.update(body);
+  }
+
+  @Post('createcustomer/:id')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: 'images' }, { name: 'profile_img' }]),
+  )
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async createCustomer(
+    @Param('id') id: number,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Body() customerDto: CreateCustomer,
+  ) {
+    const alldata = JSON.parse(JSON.stringify(files));
+    const data = JSON.parse(JSON.stringify(customerDto));
+    const { images, profile_img } = alldata;
+    return this.propertyService.createCustomer(+id, data, images, profile_img);
   }
 }

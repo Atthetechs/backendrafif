@@ -36,6 +36,7 @@ export class PaymentDetailsController {
   //   link_name: 'string',
   //   link: 'string'
   // }
+
   @Patch('update')
   paymentUpdate(@Body() body: PaymentUpdate) {
     return this.paymentService.update(body);

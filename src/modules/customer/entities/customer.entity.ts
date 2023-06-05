@@ -4,6 +4,7 @@ import { PropertyAds } from 'src/modules/property-ads/entities/property-ads.enti
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -11,6 +12,8 @@ import {
 } from 'typeorm';
 import { ContractFiles } from './contractFile.entity';
 import { Images } from './images.entity';
+import { CustomerProperty } from './customer-property.entity';
+// import { PropertyCustomerJoin } from 'src/modules/property-ads/entities/property-jointable.entity';
 
 @Entity()
 export class Customers {
@@ -82,13 +85,13 @@ export class Customers {
   })
   contractFiles: ContractFiles;
 
-  // @ManyToOne(() => PropertyAds, (property) => property.customers)
-  // propertyAds: PropertyAds;
-  @ManyToMany(() => PropertyAds, (property) => property.customers, {
+  @ManyToOne(() => PropertyAds, (property) => property.customers)
+  propertyAds: PropertyAds;
+
+  @OneToMany(() => CustomerProperty, (property) => property.customer, {
     eager: true,
-    cascade: true,
   })
-  propertyAds: PropertyAds[];
+  customer_properties: CustomerProperty;
 
   @OneToMany(() => Payment, (payment) => payment.customer, {
     onDelete: 'CASCADE',

@@ -1,18 +1,8 @@
 import { Customers } from 'src/modules/customer/entities/customer.entity';
-import { User } from 'src/modules/user/entities/user.entity';
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-// import { PropertyCustomerJoin } from './property-jointable.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class PropertyAds {
+export class CustomerProperty {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -61,11 +51,6 @@ export class PropertyAds {
   @Column({ type: 'text', array: true, nullable: true })
   images: string[];
 
-  @OneToMany(() => Customers, (customer) => customer.propertyAds, {
-    onDelete: 'CASCADE',
-  })
-  customers: Customers[];
-
-  @ManyToOne(() => User, (user) => user.propertyAds)
-  user: User;
+  @ManyToOne(() => Customers, (customer) => customer.customer_properties)
+  customer: Customers;
 }

@@ -9,6 +9,7 @@ import { Customers } from './entities/customer.entity';
 import { Payment } from '../payment_details/entities/payment.entity';
 import { ContractFiles } from './entities/contractFile.entity';
 import { Images } from './entities/images.entity';
+import { CustomerProperty } from './entities/customer-property.entity';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { Images } from './entities/images.entity';
       Payment,
       ContractFiles,
       Images,
+      CustomerProperty,
     ]),
     MulterModule.register({
       dest: './public',

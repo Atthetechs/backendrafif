@@ -22,30 +22,20 @@ export class UserService {
 
   async finduser(user: any) {
     try {
-      // const result = await this.userRepo
-      //   .createQueryBuilder('user')
-      //   .where('user.email = :email', { email: user.email })
-      //   .leftJoinAndSelect('user.propertyAds', 'propertyAds')
-      //   .leftJoinAndSelect('propertyAds.customers', 'customers')
-      //   .leftJoinAndSelect('customers.images', 'images')
-      //   .leftJoinAndSelect('customers.contractFiles', 'contractFiles')
-      //   .leftJoinAndSelect('customers.payment_details', 'payment_details')
-      //   .leftJoinAndSelect('customers.Late_payment', 'Late_payment')
-      //   .getOne();
-
-      const result = await this.userRepo.findOne({
-        where: { email: user.email },
-        relations: {
-          propertyAds: {
-            customers: {
-              propertyAds: true,
-              contractFiles: true,
-              payment_details: true,
-              Late_payment: true,
-            },
-          },
-        },
-      });
+      const result = await this.userRepo
+        .createQueryBuilder('user')
+        .where('user.email = :email', { email: user.email })
+        .leftJoinAndSelect('user.propertyAds', 'propertyAds')
+        .leftJoinAndSelect('propertyAds.customers', 'customers')
+        .leftJoinAndSelect('customers.images', 'images')
+        .leftJoinAndSelect('customers.contractFiles', 'contractFiles')
+        .leftJoinAndSelect(
+          'customers.customer_properties',
+          'customer_properties',
+        )
+        .leftJoinAndSelect('customers.payment_details', 'payment_details')
+        .leftJoinAndSelect('customers.Late_payment', 'Late_payment')
+        .getOne();
 
       const allresp: any = await this.userRepo
         .createQueryBuilder('user')
@@ -53,11 +43,15 @@ export class UserService {
         .leftJoinAndSelect('propertyAds.customers', 'customers')
         .leftJoinAndSelect('customers.images', 'images')
         .leftJoinAndSelect('customers.contractFiles', 'contractFiles')
+        .leftJoinAndSelect(
+          'customers.customer_properties',
+          'customer_properties',
+        )
         .leftJoinAndSelect('customers.payment_details', 'payment_details')
         .leftJoinAndSelect('customers.Late_payment', 'Late_payment')
         .getMany();
 
-      return { user: result, allusers: allresp };
+      return { user: result, alluser: allresp };
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
@@ -97,7 +91,7 @@ export class UserService {
     try {
       const response = await this.propertyRepo.findOneBy({ id });
       if (response) {
-        const { customers, ...result } = response;
+        const { ...result } = response;
         return result;
       } else {
         throw new HttpException('Property Not Exist', HttpStatus.BAD_REQUEST);

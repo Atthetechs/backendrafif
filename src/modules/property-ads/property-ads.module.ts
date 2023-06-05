@@ -9,6 +9,9 @@ import { PropertyAdsService } from './property-ads.service';
 import { ShopFields } from './entities/property-ads-shopfiled.entity';
 import { BuildingFields } from './entities/property-ads-buildingfield.entity';
 import { Customers } from '../customer/entities/customer.entity';
+import { Images } from '../customer/entities/images.entity';
+import { CustomerProperty } from '../customer/entities/customer-property.entity';
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([
@@ -16,6 +19,8 @@ import { Customers } from '../customer/entities/customer.entity';
       ShopFields,
       BuildingFields,
       Customers,
+      Images,
+      CustomerProperty,
     ]),
     MulterModule.register({
       dest: './public',

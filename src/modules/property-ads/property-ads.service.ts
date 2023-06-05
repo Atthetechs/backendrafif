@@ -8,6 +8,8 @@ import { ShopFields } from './entities/property-ads-shopfiled.entity';
 import { BuildingRole, UpdateProperty } from './dto/create-property-ads.dto';
 import { ShopeRole } from './dto/create-property-ads.dto';
 import { Customers } from '../customer/entities/customer.entity';
+import { Images } from '../customer/entities/images.entity';
+import { CustomerProperty } from '../customer/entities/customer-property.entity';
 
 @Injectable()
 export class PropertyAdsService {
@@ -20,6 +22,10 @@ export class PropertyAdsService {
     private buildingRepo: Repository<BuildingFields>,
     @InjectRepository(ShopFields)
     private shopRepo: Repository<ShopFields>,
+    @InjectRepository(Images) private imagesRepo: Repository<Images>,
+    @InjectRepository(CustomerProperty)
+    private customer_property_Repo: Repository<CustomerProperty>,
+
     @Inject('BUCKET') private readonly bucket: S3ImageUpload,
   ) {}
 
@@ -174,14 +180,14 @@ export class PropertyAdsService {
       if (property) {
         await this.propertyRepo.delete({ id: +body.property_id });
 
-        const customerUpdate: any = await this.customerRepo.find({
+        const customerUpdate: any = await this.customerRepo.findOne({
           where: { id: +body.customer_id },
         });
 
         const res: any = new PropertyAds();
         Object.keys(property).forEach((key) => {
           res[`${key}`] = property[`${key}`];
-          res.customers = [customerUpdate[0]];
+          res.customers = customerUpdate;
         });
 
         await this.propertyRepo.save(res);
@@ -201,6 +207,93 @@ export class PropertyAdsService {
         'Error in Code updateProperty',
         HttpStatus.BAD_REQUEST,
       );
+    }
+  }
+
+  async createCustomer(id: number, data: any, images: any, profileImg: any) {
+    try {
+      const { property_Id, ...result } = data;
+      id && (await this.propertyRepo.update({ id }, { rented: true }));
+      const enter_this_property = await this.propertyRepo.findOne({
+        where: { id },
+        relations: {
+          customers: true,
+        },
+      });
+
+      const properties = property_Id && JSON.parse(property_Id);
+      const allproperty = properties.length && properties[0];
+      if (
+        Object.keys(enter_this_property).length ||
+        enter_this_property != undefined ||
+        enter_this_property != null
+      ) {
+        const response: any =
+          images.length && (await this.bucket.upload(images));
+        const profilepic: any =
+          profileImg.length &&
+          (await this.bucket.singleImageUpload(profileImg[0]));
+
+        const res: any = new Customers();
+
+        Object.keys(result).forEach((key) => {
+          res[`${key}`] =
+            key == 'price' ? parseInt(result[`${key}`]) : result[`${key}`];
+          res.profile_img = profilepic;
+          res.propertyAds = enter_this_property;
+        });
+
+        const respo = await this.customerRepo.save(res);
+
+        for (let i = 0; i < response.length; i++) {
+          const Img = new Images();
+          Img.name = response[i].name;
+          Img.key = response[i].key;
+          Img.customer = respo;
+          await this.imagesRepo.save(Img);
+        }
+
+        if (allproperty.length) {
+          const enter_this = await this.propertyRepo.findOne({
+            where: { id },
+            relations: {
+              customers: true,
+            },
+          });
+          const propRes: any = new CustomerProperty();
+          for (let y = 0; y < allproperty.length; y++) {
+            await this.propertyRepo.update(
+              { id: +allproperty[y] },
+              { rented: true },
+            );
+            const property = await this.propertyRepo.findOne({
+              where: { id: allproperty[y] },
+            });
+            for (let x = 0; x < enter_this.customers.length; x++) {
+              const customer = await this.customerRepo.findOne({
+                where: { id: enter_this.customers[x].id },
+              });
+              Object.keys(property).forEach((key) => {
+                propRes[`${key}`] = property[`${key}`];
+                propRes.customer = customer;
+              });
+              await this.customer_property_Repo.save(propRes);
+            }
+            if (y + 1 == allproperty.length) {
+              return {
+                status: 200,
+                message: 'Create Customer And ADD Property Successfully',
+              };
+            }
+          }
+        } else {
+          return { status: 200, message: 'Create Customer Successfully' };
+        }
+      } else {
+        return { status: 400, message: 'Main Property Not Found' };
+      }
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 }
