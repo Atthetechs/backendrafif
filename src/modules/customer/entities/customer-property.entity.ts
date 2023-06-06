@@ -7,6 +7,9 @@ export class CustomerProperty {
   id: number;
 
   @Column()
+  property_id: number;
+
+  @Column()
   owner_name: string;
 
   @Column({ nullable: true })
@@ -45,7 +48,7 @@ export class CustomerProperty {
   @Column({ nullable: true })
   paci_No: string;
 
-  @Column({ default: false })
+  @Column({ type: 'boolean', default: false })
   rented: boolean;
 
   @Column({ type: 'text', array: true, nullable: true })

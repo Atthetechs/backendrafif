@@ -12,6 +12,7 @@ import {
 export enum BuildingRole {
   Address = 'address',
   Area = 'area',
+  PaciNo = 'paci_No',
 }
 
 export enum ShopeRole {

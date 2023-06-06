@@ -162,9 +162,14 @@ export class CustomerService {
     }
   }
 
-  async findAll(propertyid: number, actives: boolean) {
+  async findAll(propertyid: number, actives: any) {
     try {
-      await this.propertyAd.update({ id: propertyid }, { rented: actives });
+      await this.propertyAd
+        .createQueryBuilder('propertyAds')
+        .update()
+        .set({ rented: actives })
+        .where('id = :id', { id: propertyid })
+        .execute();
 
       const property: any = await this.propertyAd
         .createQueryBuilder('propertyAds')
@@ -188,6 +193,12 @@ export class CustomerService {
                 .update()
                 .set({ rented: actives })
                 .where('id = :id', { id: customerProperty[x].id })
+                .execute();
+              await this.propertyAd
+                .createQueryBuilder('propertyAds')
+                .update()
+                .set({ rented: actives })
+                .where('id = :id', { id: customerProperty[x].property_id })
                 .execute();
             }
           }

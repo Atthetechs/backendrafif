@@ -55,7 +55,7 @@ export class PropertyAds {
   @Column({ nullable: true })
   paci_No: string;
 
-  @Column({ default: false })
+  @Column({ type: 'boolean', default: false })
   rented: boolean;
 
   @Column({ type: 'text', array: true, nullable: true })

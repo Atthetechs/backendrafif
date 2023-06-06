@@ -106,6 +106,10 @@ export class PropertyAdsService {
           name: BuildingRole.Address,
         },
         {
+          label: { name_en: 'PaciNo', name_ar: 'باسين' },
+          name: BuildingRole.PaciNo,
+        },
+        {
           label: { name_en: 'Area', name_ar: 'منطقة' },
           name: BuildingRole.Area,
         },
@@ -260,14 +264,14 @@ export class PropertyAdsService {
               customers: true,
             },
           });
-          const propRes: any = new CustomerProperty();
+          const propRes = new CustomerProperty();
           for (let y = 0; y < allproperty.length; y++) {
             await this.propertyRepo.update(
               { id: +allproperty[y] },
               { rented: true },
             );
             const property = await this.propertyRepo.findOne({
-              where: { id: allproperty[y] },
+              where: { id: +allproperty[y] },
             });
             for (let x = 0; x < enter_this.customers.length; x++) {
               const customer = await this.customerRepo.findOne({
@@ -275,6 +279,7 @@ export class PropertyAdsService {
               });
               Object.keys(property).forEach((key) => {
                 propRes[`${key}`] = property[`${key}`];
+                propRes[`property_id`] = property['id'];
                 propRes.customer = customer;
               });
               await this.customer_property_Repo.save(propRes);
