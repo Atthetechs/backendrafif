@@ -220,9 +220,9 @@ export class PropertyAdsService {
       id && (await this.propertyRepo.update({ id }, { rented: true }));
       const enter_this_property = await this.propertyRepo.findOne({
         where: { id },
-        relations: {
-          customers: true,
-        },
+        // relations: {
+        //   customers: true,
+        // },
       });
 
       const properties = property_Id && JSON.parse(property_Id);
@@ -260,9 +260,9 @@ export class PropertyAdsService {
         if (allproperty.length) {
           const enter_this = await this.propertyRepo.findOne({
             where: { id },
-            relations: {
-              customers: true,
-            },
+            // relations: {
+            //   customers: true,
+            // },
           });
           const propRes = new CustomerProperty();
           for (let y = 0; y < allproperty.length; y++) {

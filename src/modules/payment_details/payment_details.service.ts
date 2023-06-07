@@ -146,7 +146,7 @@ export class PaymentDetailsService {
 
       const { customers } = propertyData;
 
-      if (customers.length) {
+      if (customers?.length) {
         customers.forEach(async (value: any) => {
           if (currentDate >= 1 && currentDate < 11) {
             const createPayment = new Payment();

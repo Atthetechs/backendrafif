@@ -63,6 +63,7 @@ export class PropertyAds {
 
   @OneToMany(() => Customers, (customer) => customer.propertyAds, {
     onDelete: 'CASCADE',
+    eager: true,
   })
   customers: Customers[];
 
