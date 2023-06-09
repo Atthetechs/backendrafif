@@ -13,7 +13,7 @@ export enum BuildingRole {
   Address = 'address',
   Area = 'area',
   PaciNo = 'paci_No',
-  plot_No = 'القطعة رقم',
+  plot_No = 'plot_No',
 }
 
 export enum ShopeRole {
@@ -21,7 +21,7 @@ export enum ShopeRole {
   ShopNo = 'shop_No',
   PaciNo = 'paci_No',
   Address = 'address',
-  plot_No = 'القطعة رقم',
+  plot_No = 'plot_No',
 }
 
 export enum UserRole {

@@ -288,6 +288,14 @@ export class PropertyAdsService {
                 where: { id: +allproperty[y] },
               });
               for (let x = 0; x < enter_this.customers.length; x++) {
+                await this.customerRepo.update(
+                  { id: enter_this.customers[x].id },
+                  {
+                    contract_date: moment(Currentdate).format('YYYY/MM/DD'),
+                    created_at: data.created_at,
+                    price: data.price,
+                  },
+                );
                 const customer = await this.customerRepo.findOne({
                   where: { id: enter_this.customers[x].id },
                 });
