@@ -8,6 +8,7 @@ import { ContractFiles } from './entities/contractFile.entity';
 import { Images } from './entities/images.entity';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CustomerProperty } from './entities/customer-property.entity';
+import * as moment from 'moment';
 
 @Injectable()
 export class CustomerService {
@@ -62,11 +63,15 @@ export class CustomerService {
 
   async create(data: any, file: any, profile_img: any) {
     try {
-      const { property_Id, ...result } = data;
+      const { property_Id, grace_days, created_at, ...result } = data;
       const propertyAd = await this.propertyAd.findOne({
         where: { id: property_Id },
       });
       if (propertyAd) {
+        const Currentdate = new Date(created_at);
+        grace_days?.length &&
+          Currentdate.setDate(Currentdate.getDate() + +grace_days);
+
         const response: any = file.length && (await this.bucket.upload(file));
 
         const profilepic: any =
@@ -78,6 +83,8 @@ export class CustomerService {
           res[`${key}`] =
             key == 'price' ? parseInt(result[`${key}`]) : result[`${key}`];
           res.profile_img = profilepic;
+          res.grace_days = grace_days;
+          res.contract_date = moment(Currentdate).format('YYYY/MM/DD');
           res.propertyAds = propertyAd;
         });
 

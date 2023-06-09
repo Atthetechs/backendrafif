@@ -21,10 +21,7 @@ export class Customers {
   id: number;
 
   @Column()
-  firstname: string;
-
-  @Column()
-  lastname: string;
+  fullname: string;
 
   @Column()
   address: string;
@@ -59,8 +56,17 @@ export class Customers {
   @Column({ nullable: true })
   grace_days: string;
 
-  @Column()
+  @Column({ nullable: true })
+  paci_No: string;
+
+  @Column({ nullable: true })
   created_at: string;
+
+  @Column({ nullable: true })
+  contract_date: string;
+
+  @Column({ nullable: true })
+  purpose: string;
 
   @Column({ default: true, type: 'boolean' })
   active: boolean;

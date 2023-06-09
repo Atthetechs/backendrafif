@@ -10,12 +10,7 @@ export class CreateCustomerDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  firstname: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  lastname: string;
+  fullname: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -66,10 +61,17 @@ export class CreateCustomerDto {
   @IsString()
   grace_days?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
   @IsString()
-  created_at: string;
+  paci_No: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  created_at?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  purpose?: string;
 
   @ApiProperty({
     type: 'string',
@@ -98,17 +100,9 @@ export class uploadFile {
 }
 
 export class UpdateCustomer {
-  @ApiProperty()
-  @IsNotEmpty()
-  customer_Id: number;
-
   @ApiProperty({ required: false })
   @IsString()
-  firstname?: string;
-
-  @ApiProperty({ required: false })
-  @IsString()
-  lastname?: string;
+  fullname?: string;
 
   @ApiProperty({ required: false })
   @IsString()

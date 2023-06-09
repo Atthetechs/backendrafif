@@ -13,6 +13,7 @@ export enum BuildingRole {
   Address = 'address',
   Area = 'area',
   PaciNo = 'paci_No',
+  plot_No = 'القطعة رقم',
 }
 
 export enum ShopeRole {
@@ -20,6 +21,7 @@ export enum ShopeRole {
   ShopNo = 'shop_No',
   PaciNo = 'paci_No',
   Address = 'address',
+  plot_No = 'القطعة رقم',
 }
 
 export enum UserRole {
@@ -87,6 +89,10 @@ export class CreatePropertyDto {
 
   @ApiProperty({ required: false })
   @IsString()
+  plot_No?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
   paci_No?: string;
 
   @ApiProperty({
@@ -120,12 +126,7 @@ export class CreateCustomer {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  firstname: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  lastname: string;
+  fullname: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -176,10 +177,17 @@ export class CreateCustomer {
   @IsString()
   grace_days?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
   @IsString()
-  created_at: string;
+  paci_No?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  created_at?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  purpose?: string;
 
   @ApiProperty({
     type: 'string',

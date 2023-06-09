@@ -10,6 +10,7 @@ import { ShopeRole } from './dto/create-property-ads.dto';
 import { Customers } from '../customer/entities/customer.entity';
 import { Images } from '../customer/entities/images.entity';
 import { CustomerProperty } from '../customer/entities/customer-property.entity';
+import * as moment from 'moment';
 
 @Injectable()
 export class PropertyAdsService {
@@ -110,8 +111,15 @@ export class PropertyAdsService {
           name: BuildingRole.PaciNo,
         },
         {
-          label: { name_en: 'Area', name_ar: 'منطقة' },
+          label: {
+            name_en: 'Area Square meter',
+            name_ar: 'المساحة بالمتر المربع',
+          },
           name: BuildingRole.Area,
+        },
+        {
+          label: { name_en: 'Plot No', name_ar: 'القطعة رقم' },
+          name: BuildingRole.plot_No,
         },
       ];
       const shop = [
@@ -129,10 +137,14 @@ export class PropertyAdsService {
         },
         {
           label: {
-            name_en: 'Area',
-            name_ar: 'منطقة',
+            name_en: 'Area Square meter',
+            name_ar: 'المساحة بالمتر المربع',
           },
           name: ShopeRole.Area,
+        },
+        {
+          label: { name_en: 'Plot No', name_ar: 'القطعة رقم' },
+          name: BuildingRole.plot_No,
         },
       ];
       const arrayname = [
@@ -216,22 +228,24 @@ export class PropertyAdsService {
 
   async createCustomer(id: number, data: any, images: any, profileImg: any) {
     try {
-      const { property_Id, ...result } = data;
+      const { property_Id, grace_days, price, created_at, ...result } = data;
       id && (await this.propertyRepo.update({ id }, { rented: true }));
       const enter_this_property = await this.propertyRepo.findOne({
         where: { id },
-        // relations: {
-        //   customers: true,
-        // },
       });
 
       const properties = property_Id && JSON.parse(property_Id);
       const allproperty = properties.length && properties[0];
+
       if (
         Object.keys(enter_this_property).length ||
         enter_this_property != undefined ||
         enter_this_property != null
       ) {
+        const Currentdate = new Date(created_at);
+        grace_days?.length &&
+          Currentdate.setDate(Currentdate.getDate() + +grace_days);
+
         const response: any =
           images.length && (await this.bucket.upload(images));
         const profilepic: any =
@@ -244,6 +258,8 @@ export class PropertyAdsService {
           res[`${key}`] =
             key == 'price' ? parseInt(result[`${key}`]) : result[`${key}`];
           res.profile_img = profilepic;
+          res.grace_days = grace_days;
+          res.contract_date = moment(Currentdate).format('YYYY/MM/DD');
           res.propertyAds = enter_this_property;
         });
 
@@ -257,38 +273,54 @@ export class PropertyAdsService {
           await this.imagesRepo.save(Img);
         }
 
-        if (allproperty.length) {
+        if (allproperty.length || price) {
           const enter_this = await this.propertyRepo.findOne({
             where: { id },
-            // relations: {
-            //   customers: true,
-            // },
           });
-          const propRes = new CustomerProperty();
-          for (let y = 0; y < allproperty.length; y++) {
-            await this.propertyRepo.update(
-              { id: +allproperty[y] },
-              { rented: true },
-            );
-            const property = await this.propertyRepo.findOne({
-              where: { id: +allproperty[y] },
-            });
-            for (let x = 0; x < enter_this.customers.length; x++) {
-              const customer = await this.customerRepo.findOne({
-                where: { id: enter_this.customers[x].id },
+          if (allproperty.length) {
+            const propRes = new CustomerProperty();
+            for (let y = 0; y < allproperty.length; y++) {
+              await this.propertyRepo.update(
+                { id: +allproperty[y] },
+                { rented: true },
+              );
+              const property = await this.propertyRepo.findOne({
+                where: { id: +allproperty[y] },
               });
-              Object.keys(property).forEach((key) => {
-                propRes[`${key}`] = property[`${key}`];
-                propRes[`property_id`] = property['id'];
-                propRes.customer = customer;
-              });
-              await this.customer_property_Repo.save(propRes);
+              for (let x = 0; x < enter_this.customers.length; x++) {
+                const customer = await this.customerRepo.findOne({
+                  where: { id: enter_this.customers[x].id },
+                });
+                Object.keys(property).forEach((key) => {
+                  propRes[`${key}`] = property[`${key}`];
+                  propRes[`property_id`] = property['id'];
+                  propRes.customer = customer;
+                });
+                await this.customer_property_Repo.save(propRes);
+              }
+              if (y + 1 == allproperty.length) {
+                return {
+                  status: 200,
+                  message: 'Create Customer And ADD Property Successfully',
+                };
+              }
             }
-            if (y + 1 == allproperty.length) {
-              return {
-                status: 200,
-                message: 'Create Customer And ADD Property Successfully',
-              };
+          } else {
+            for (let y = 0; y < enter_this.customers.length; y++) {
+              await this.customerRepo.update(
+                { id: enter_this.customers[y].id },
+                {
+                  contract_date: moment(Currentdate).format('YYYY/MM/DD'),
+                  created_at: data.created_at,
+                  price: data.price,
+                },
+              );
+              if (y + 1 == enter_this.customers.length) {
+                return {
+                  status: 200,
+                  message: 'Create Customer And Update Others Successfully',
+                };
+              }
             }
           }
         } else {

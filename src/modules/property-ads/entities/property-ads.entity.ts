@@ -53,6 +53,9 @@ export class PropertyAds {
   shop_No: string;
 
   @Column({ nullable: true })
+  plot_No: string;
+
+  @Column({ nullable: true })
   paci_No: string;
 
   @Column({ type: 'boolean', default: false })
