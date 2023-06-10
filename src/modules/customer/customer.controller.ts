@@ -79,6 +79,13 @@ export class CustomerController {
   // @UseGuards(JwtAuthGuard)
   @Patch('non-active')
   NonActive(@Body() data: CreateNonActiveDto) {
-    return this.customerService.findAll(data);
+    const { propertyid, active, grace_days, price, created_at } = data;
+    return this.customerService.findAll(
+      propertyid,
+      active,
+      grace_days,
+      price,
+      created_at,
+    );
   }
 }

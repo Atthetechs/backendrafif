@@ -169,18 +169,28 @@ export class CustomerService {
     }
   }
 
-  async findAll(data: any) {
+  async findAll(
+    propertyid: number,
+    active: any,
+    grace_days: string,
+    price: string,
+    created_at: string,
+  ) {
     try {
+      const main = {};
+      if (grace_days.length && price.length && created_at.length) {
+        Object.assign(main, { grace_days, price, created_at, active });
+      }
       await this.propertyAd
         .createQueryBuilder('propertyAds')
         .update()
-        .set({ rented: data.active })
-        .where('id = :id', { id: data.propertyid })
+        .set({ rented: active })
+        .where('id = :id', { id: propertyid })
         .execute();
 
       const property: any = await this.propertyAd
         .createQueryBuilder('propertyAds')
-        .where('propertyAds.id =:id', { id: data.propertyid })
+        .where('propertyAds.id =:id', { id: propertyid })
         .leftJoinAndSelect('propertyAds.customers', 'customers')
         .leftJoinAndSelect(
           'customers.customer_properties',
@@ -189,11 +199,9 @@ export class CustomerService {
         .getOne();
 
       const current = new Date();
-      const Currentdate = new Date(
-        data?.created_at.length ? data.created_at : current,
-      );
-      data?.grace_days?.length &&
-        Currentdate.setDate(Currentdate.getDate() + +data.grace_days);
+      const Currentdate = new Date(created_at?.length ? created_at : current);
+      grace_days?.length &&
+        Currentdate.setDate(Currentdate.getDate() + +grace_days);
 
       const { customers } = property;
       if (customers.length) {
@@ -205,13 +213,13 @@ export class CustomerService {
               await this.customer_property_Repo
                 .createQueryBuilder('customer_properties')
                 .update()
-                .set({ rented: data.active })
+                .set({ rented: active })
                 .where('id = :id', { id: customerProperty[x].id })
                 .execute();
               await this.propertyAd
                 .createQueryBuilder('propertyAds')
                 .update()
-                .set({ rented: data.active })
+                .set({ rented: active })
                 .where('id = :id', { id: customerProperty[x].property_id })
                 .execute();
             }
@@ -219,9 +227,9 @@ export class CustomerService {
           const updateCustomer = await this.customerRepo.findOne({
             where: { id: customers[i].id },
           });
-          Object.keys(data).forEach((key) => {
+          Object.keys(main).forEach((key) => {
             updateCustomer[`${key}`] =
-              key == 'price' ? +data['price'] : data[`${key}`];
+              key == 'price' ? +main['price'] : main[`${key}`];
             updateCustomer.contract_date =
               moment(Currentdate).format('YYYY/MM/DD');
             updateCustomer.propertyAds = property;
