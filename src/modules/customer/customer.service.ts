@@ -208,7 +208,9 @@ export class CustomerService {
         .getOne();
 
       const current = new Date();
-      const Currentdate = new Date(created_at?.length ? created_at : current);
+      const Currentdate = new Date(
+        created_at?.length && created_at != 'string' ? created_at : current,
+      );
       grace_days?.length &&
         Currentdate.setDate(Currentdate.getDate() + +grace_days);
 
