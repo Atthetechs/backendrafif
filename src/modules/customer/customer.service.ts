@@ -169,24 +169,31 @@ export class CustomerService {
     }
   }
 
-  async findAll(propertyid: number, actives: any) {
+  async findAll(data: any) {
     try {
       await this.propertyAd
         .createQueryBuilder('propertyAds')
         .update()
-        .set({ rented: actives })
-        .where('id = :id', { id: propertyid })
+        .set({ rented: data.active })
+        .where('id = :id', { id: data.propertyid })
         .execute();
 
       const property: any = await this.propertyAd
         .createQueryBuilder('propertyAds')
-        .where('propertyAds.id =:id', { id: propertyid })
+        .where('propertyAds.id =:id', { id: data.propertyid })
         .leftJoinAndSelect('propertyAds.customers', 'customers')
         .leftJoinAndSelect(
           'customers.customer_properties',
           'customer_properties',
         )
         .getOne();
+
+      const current = new Date();
+      const Currentdate = new Date(
+        data?.created_at.length ? data.created_at : current,
+      );
+      data?.grace_days?.length &&
+        Currentdate.setDate(Currentdate.getDate() + +data.grace_days);
 
       const { customers } = property;
       if (customers.length) {
@@ -198,25 +205,31 @@ export class CustomerService {
               await this.customer_property_Repo
                 .createQueryBuilder('customer_properties')
                 .update()
-                .set({ rented: actives })
+                .set({ rented: data.active })
                 .where('id = :id', { id: customerProperty[x].id })
                 .execute();
               await this.propertyAd
                 .createQueryBuilder('propertyAds')
                 .update()
-                .set({ rented: actives })
+                .set({ rented: data.active })
                 .where('id = :id', { id: customerProperty[x].property_id })
                 .execute();
             }
           }
-          const res = await this.customerRepo
-            .createQueryBuilder('customers')
-            .update()
-            .set({ active: actives })
-            .where('id = :id', { id: customers[i].id })
-            .execute();
-
-          updatedResult.push(res.affected);
+          const updateCustomer = await this.customerRepo.findOne({
+            where: { id: customers[i].id },
+          });
+          Object.keys(data).forEach((key) => {
+            updateCustomer[`${key}`] =
+              key == 'price' ? +data['price'] : data[`${key}`];
+            updateCustomer.contract_date =
+              moment(Currentdate).format('YYYY/MM/DD');
+            updateCustomer.propertyAds = property;
+          });
+          const save: any = await this.customerRepo.save(updateCustomer);
+          if (save) {
+            updatedResult.push(1);
+          }
         }
         if (updatedResult.length == customers.length)
           return { status: 200, messsage: 'Successfully Updated' };

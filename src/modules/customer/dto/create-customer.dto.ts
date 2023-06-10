@@ -1,6 +1,29 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
+export class CreateNonActiveDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  propertyid: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  active: boolean;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  grace_days: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  price: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  created_at: string;
+}
 export class CreateCustomerDto {
   @ApiProperty()
   @IsNotEmpty()

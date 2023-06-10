@@ -1,10 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsNumberString,
-  IsString,
-} from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class PaymentDTO {
   @ApiProperty()
@@ -35,6 +30,10 @@ export class PaymentDTO {
   @ApiProperty({ required: false })
   @IsString()
   link?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  being_of: string;
 }
 
 export class PaymentUpdate {

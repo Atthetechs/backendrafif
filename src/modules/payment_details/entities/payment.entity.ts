@@ -36,6 +36,9 @@ export class Payment {
   @Column({ nullable: true })
   link: string;
 
+  @Column({ nullable: true })
+  being_of: string;
+
   @CreateDateColumn()
   created_date: Date;
 

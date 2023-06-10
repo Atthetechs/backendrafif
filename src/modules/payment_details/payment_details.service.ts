@@ -137,6 +137,7 @@ export class PaymentDetailsService {
     bank_name: string,
     link_name: string,
     link: string,
+    being_of: string,
   ) {
     try {
       const currentDate: any = moment().format('DD');
@@ -157,6 +158,7 @@ export class PaymentDetailsService {
             createPayment.check_no = check_no;
             createPayment.link = link;
             createPayment.link_name = link_name;
+            createPayment.being_of = being_of;
             createPayment.customer = value;
             const res = await this.paymentRepo.save(createPayment);
             if (res) {
@@ -176,6 +178,7 @@ export class PaymentDetailsService {
             createPayment.check_no = check_no;
             createPayment.link = link;
             createPayment.link_name = link_name;
+            createPayment.being_of = being_of;
             createPayment.customer = value;
             const res = await this.latepaymentRepo.save(createPayment);
             if (res) {

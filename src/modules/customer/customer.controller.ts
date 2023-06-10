@@ -21,6 +21,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CustomerService } from './customer.service';
 import {
   CreateCustomerDto,
+  CreateNonActiveDto,
   UpdateCustomer,
   uploadFile,
 } from './dto/create-customer.dto';
@@ -76,12 +77,8 @@ export class CustomerController {
   }
 
   // @UseGuards(JwtAuthGuard)
-  @Patch('non-active/:actives/:propertyid')
-  // @ApiConsumes('multipart/form-data')
-  NonActive(
-    @Param('propertyid') propertyid: number,
-    @Param('actives') actives: boolean,
-  ) {
-    return this.customerService.findAll(propertyid, actives);
+  @Patch('non-active')
+  NonActive(@Body() data: CreateNonActiveDto) {
+    return this.customerService.findAll(data);
   }
 }
