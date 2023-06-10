@@ -14,15 +14,15 @@ export class CreateNonActiveDto {
 
   @ApiProperty({ required: false })
   @IsString()
-  grace_days: string;
+  grace_days?: string;
 
   @ApiProperty({ required: false })
   @IsString()
-  price: string;
+  price?: string;
 
   @ApiProperty({ required: false })
   @IsString()
-  created_at: string;
+  created_at?: string;
 }
 export class CreateCustomerDto {
   @ApiProperty()
