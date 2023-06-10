@@ -180,6 +180,8 @@ export class CustomerService {
       const main = {};
       if (grace_days.length && price.length && created_at.length) {
         Object.assign(main, { grace_days, price, created_at, active });
+      } else {
+        Object.assign(main, { active });
       }
       await this.propertyAd
         .createQueryBuilder('propertyAds')
@@ -224,6 +226,7 @@ export class CustomerService {
                 .execute();
             }
           }
+
           const updateCustomer = await this.customerRepo.findOne({
             where: { id: customers[i].id },
           });
