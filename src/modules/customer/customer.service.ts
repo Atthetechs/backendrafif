@@ -242,8 +242,10 @@ export class CustomerService {
           Object.keys(main).forEach((key) => {
             updateCustomer[`${key}`] =
               key == 'price' ? +main['price'] : main[`${key}`];
-            updateCustomer.contract_date =
-              moment(Currentdate).format('YYYY/MM/DD');
+            created_at.length &&
+              created_at != 'string' &&
+              (updateCustomer.contract_date =
+                moment(Currentdate).format('YYYY/MM/DD'));
             updateCustomer.propertyAds = property;
           });
           const save: any = await this.customerRepo.save(updateCustomer);
