@@ -178,7 +178,14 @@ export class CustomerService {
   ) {
     try {
       const main = {};
-      if (grace_days.length && price.length && created_at.length) {
+      if (
+        grace_days != 'string' &&
+        grace_days.length &&
+        price != 'string' &&
+        price.length &&
+        created_at != 'string' &&
+        created_at.length
+      ) {
         Object.assign(main, { grace_days, price, created_at, active });
       } else {
         Object.assign(main, { active });
