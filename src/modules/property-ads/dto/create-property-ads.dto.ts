@@ -123,20 +123,20 @@ export class CreateCustomer {
   @IsString({ each: true })
   property_Id?: string[];
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
+  // @IsNotEmpty()
   @IsString()
-  fullname: string;
+  fullname?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
+  // @IsNotEmpty()
   @IsString()
-  civil_id: string;
+  civil_id?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
+  // @IsNotEmpty()
   @IsString()
-  address: string;
+  address?: string;
 
   @ApiProperty({ required: false })
   @IsString()
@@ -149,33 +149,37 @@ export class CreateCustomer {
   @IsString()
   priceInWords?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
+  // @IsNotEmpty()
   @IsString()
-  country: string;
+  country?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
+  // @IsNotEmpty()
   @IsString()
-  gender: string;
+  gender?: string;
 
   @ApiProperty({ required: false })
   @IsString()
   phoneNumber?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
+  // @IsNotEmpty()
   @IsString()
-  mobileNumber: string;
+  mobileNumber?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
+  // @IsNotEmpty()
   @IsString()
-  email: string;
+  email?: string;
 
   @ApiProperty({ required: false })
   @IsString()
   grace_days?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  contract_year?: string;
 
   @ApiProperty({ required: false })
   @IsString()
@@ -193,14 +197,16 @@ export class CreateCustomer {
     type: 'string',
     format: 'binary',
     description: 'Profile Image to upload',
+    required: false, /// tody add external
   })
-  profile_img: string;
+  profile_img?: string;
 
   @ApiProperty({
     isArray: true,
     type: 'string',
     format: 'binary',
     description: 'Image file to upload',
+    required: false, /// tody add external
   })
-  images: string;
+  images?: string;
 }

@@ -66,6 +66,9 @@ export class Customers {
   contract_date: string;
 
   @Column({ nullable: true })
+  expire_date: string;
+
+  @Column({ nullable: true })
   purpose: string;
 
   @Column({ default: true, type: 'boolean' })

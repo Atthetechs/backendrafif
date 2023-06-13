@@ -228,7 +228,7 @@ export class PropertyAdsService {
 
   async createCustomer(id: number, data: any, images: any, profileImg: any) {
     try {
-      const { property_Id, grace_days, price, created_at, ...result } = data;
+      const { property_Id, grace_days, contract_year, ...result } = data;
       id && (await this.propertyRepo.update({ id }, { rented: true }));
       const enter_this_property = await this.propertyRepo.findOne({
         where: { id },
@@ -242,9 +242,12 @@ export class PropertyAdsService {
         enter_this_property != undefined ||
         enter_this_property != null
       ) {
-        const Currentdate = new Date(created_at);
+        const Currentdate = new Date(data.created_at);
         grace_days?.length &&
           Currentdate.setDate(Currentdate.getDate() + +grace_days);
+        const ExpireDate = new Date(Currentdate);
+        contract_year?.length &&
+          ExpireDate.setFullYear(ExpireDate.getFullYear() + +contract_year);
 
         const response: any =
           images.length && (await this.bucket.upload(images));
@@ -260,6 +263,7 @@ export class PropertyAdsService {
           res.profile_img = profilepic;
           res.grace_days = grace_days;
           res.contract_date = moment(Currentdate).format('YYYY/MM/DD');
+          res.expire_date = moment(ExpireDate).format('YYYY/MM/DD');
           res.propertyAds = enter_this_property;
         });
 
@@ -273,7 +277,7 @@ export class PropertyAdsService {
           await this.imagesRepo.save(Img);
         }
 
-        if (allproperty.length || price) {
+        if (allproperty.length || data.price) {
           const enter_this = await this.propertyRepo.findOne({
             where: { id },
           });
@@ -292,6 +296,7 @@ export class PropertyAdsService {
                   { id: enter_this.customers[x].id },
                   {
                     contract_date: moment(Currentdate).format('YYYY/MM/DD'),
+                    expire_date: moment(ExpireDate).format('YYYY/MM/DD'),
                     created_at: data.created_at,
                     price: data.price,
                   },
@@ -319,6 +324,7 @@ export class PropertyAdsService {
                 { id: enter_this.customers[y].id },
                 {
                   contract_date: moment(Currentdate).format('YYYY/MM/DD'),
+                  expire_date: moment(ExpireDate).format('YYYY/MM/DD'),
                   created_at: data.created_at,
                   price: data.price,
                 },
