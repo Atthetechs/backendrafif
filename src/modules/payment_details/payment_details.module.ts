@@ -15,5 +15,6 @@ import { PropertyAds } from '../property-ads/entities/property-ads.entity';
   ],
   controllers: [PaymentDetailsController],
   providers: [PaymentDetailsService],
+  exports: [PaymentDetailsService],
 })
 export class PaymentDetailsModule {}

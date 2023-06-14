@@ -201,7 +201,7 @@ export class PaymentDetailsService {
 
   async update(body: any) {
     try {
-      const { propert_id } = body;
+      const { propert_id, ...result } = body;
       const currentDate: any = moment().format('DD');
 
       const res = await this.propertyRepo
@@ -209,48 +209,53 @@ export class PaymentDetailsService {
         .where('propertyAds.id =:id', { id: propert_id })
         .leftJoinAndSelect('propertyAds.customers', 'customers')
         .leftJoinAndSelect('customers.payment_details', 'payment_details')
+        // .orderBy('payment_details.id', 'ASC')
         .leftJoinAndSelect('customers.Late_payment', 'Late_payment')
+        .orderBy('Late_payment.id', 'ASC')
         .getOne();
 
       const { customers } = res;
       for (let x in customers) {
         const { payment_details, Late_payment } = customers[x] as any;
-        if (currentDate >= 1 && currentDate < 11) {
+        if (currentDate >= 1 && currentDate < 10) {
           if (payment_details.length) {
-            for (let i = 0; i < payment_details.length; i++) {
-              if (i == payment_details.length - 1) {
+            const paymentDetail = payment_details.sort(
+              (a: any, b: any) => a.id - b.id,
+            );
+            for (let i = 0; i < paymentDetail.length; i++) {
+              if (i == paymentDetail.length - 1) {
                 const updatePayment = await this.paymentRepo.findOne({
-                  where: { id: payment_details[i].id },
-                  order: { id: 'ASC' },
+                  where: { id: paymentDetail[i].id },
                 });
-                Object.keys(body).forEach((key) => {
-                  updatePayment[`${key}`] = body[`${key}`];
+                Object.keys(result).forEach((key) => {
+                  updatePayment[`${key}`] = result[`${key}`];
                   updatePayment.customer = customers[x];
                 });
                 await this.paymentRepo.save(updatePayment);
-                await this.PaymentUpdate(propert_id);
-                return { status: 200, message: 'Successfully Updated' };
               }
             }
+            await this.PaymentUpdate(propert_id);
+            return { status: 200, message: 'Successfully Updated' };
           }
         } else {
           if (Late_payment.length) {
-            const late_paymentArr = Late_payment;
+            const late_paymentArr = Late_payment.sort(
+              (a: any, b: any) => a.id - b.id,
+            );
             for (let i = 0; i < late_paymentArr.length; i++) {
               if (i == late_paymentArr.length - 1) {
                 const updatePayment = await this.latepaymentRepo.findOne({
                   where: { id: late_paymentArr[i].id },
-                  order: { id: 'ASC' },
                 });
-                Object.keys(body).forEach((key) => {
-                  updatePayment[`${key}`] = body[`${key}`];
+                Object.keys(result).forEach((key) => {
+                  updatePayment[`${key}`] = result[`${key}`];
                   updatePayment.customer = customers[x];
                 });
                 await this.latepaymentRepo.save(updatePayment);
-                await this.PaymentUpdate(propert_id);
-                return { status: 200, message: 'Successfully Updated' };
               }
             }
+            await this.PaymentUpdate(propert_id);
+            return { status: 200, message: 'Successfully Updated' };
           }
         }
       }

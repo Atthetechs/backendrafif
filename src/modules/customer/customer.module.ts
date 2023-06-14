@@ -10,6 +10,7 @@ import { Payment } from '../payment_details/entities/payment.entity';
 import { ContractFiles } from './entities/contractFile.entity';
 import { Images } from './entities/images.entity';
 import { CustomerProperty } from './entities/customer-property.entity';
+import { PaymentDetailsModule } from '../payment_details/payment_details.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CustomerProperty } from './entities/customer-property.entity';
     MulterModule.register({
       dest: './public',
     }),
+    PaymentDetailsModule,
   ],
   controllers: [CustomerController],
   providers: [

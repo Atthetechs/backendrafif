@@ -9,6 +9,7 @@ import { Images } from './entities/images.entity';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CustomerProperty } from './entities/customer-property.entity';
 import * as moment from 'moment';
+import { PaymentDetailsService } from '../payment_details/payment_details.service';
 
 @Injectable()
 export class CustomerService {
@@ -21,6 +22,8 @@ export class CustomerService {
     private customer_property_Repo: Repository<CustomerProperty>,
     @InjectRepository(Images) private imagesRepo: Repository<Images>,
     @Inject('BUCKET') private readonly bucket: S3ImageUpload,
+    @Inject(PaymentDetailsService)
+    private readonly paymentUpdate: PaymentDetailsService,
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
@@ -32,10 +35,12 @@ export class CustomerService {
 
       if (allcustomerData.length) {
         allcustomerData.forEach(async (el: any) => {
-          let createdDate = new Date(JSON.stringify(el.created_at));
+          const expireDate = new Date(el.expire_date);
           const currentDate = new Date();
-          const days = await this.DaysBetweenTwoDates(createdDate, currentDate);
-          if (days == 365 || days > 365) {
+          if (
+            moment(expireDate).format('YYYY/MM/DD') ==
+            moment(currentDate).format('YYYY/MM/DD')
+          ) {
             await this.customerRepo
               .createQueryBuilder('customers')
               .update()
@@ -43,6 +48,17 @@ export class CustomerService {
               .where('id = :id', { id: el.id })
               .execute();
           }
+          // let createdDate = new Date(JSON.stringify(el.created_at));
+          // const currentDate = new Date();
+          // const days = await this.DaysBetweenTwoDates(createdDate, currentDate);
+          // if (days == 365 || days > 365) {
+          //   await this.customerRepo
+          //     .createQueryBuilder('customers')
+          //     .update()
+          //     .set({ active: false })
+          //     .where('id = :id', { id: el.id })
+          //     .execute();
+          // }
         });
       }
     } catch (err) {
@@ -50,16 +66,16 @@ export class CustomerService {
     }
   }
 
-  async DaysBetweenTwoDates(createdDate: any, currentDate: any) {
-    try {
-      const ONE_DAY = 1000 * 60 * 60 * 24;
-      const differenceMs = Math.abs(createdDate - currentDate);
-      // Convert back to days and return
-      return Math.round(differenceMs / ONE_DAY);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
-    }
-  }
+  // async DaysBetweenTwoDates(createdDate: any, currentDate: any) {
+  //   try {
+  //     const ONE_DAY = 1000 * 60 * 60 * 24;
+  //     const differenceMs = Math.abs(createdDate - currentDate);
+  //     // Convert back to days and return
+  //     return Math.round(differenceMs / ONE_DAY);
+  //   } catch (err) {
+  //     throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+  //   }
+  // }
 
   async create(data: any, file: any, profile_img: any) {
     try {
@@ -253,8 +269,10 @@ export class CustomerService {
             updatedResult.push(1);
           }
         }
-        if (updatedResult.length == customers.length)
+        if (updatedResult.length == customers.length) {
+          await this.paymentUpdate.PaymentUpdate(propertyid);
           return { status: 200, messsage: 'Successfully Updated' };
+        }
       } else {
         return { status: 400, messsage: 'Plz Customers Created' };
       }

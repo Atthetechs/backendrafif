@@ -11,6 +11,7 @@ import { BuildingFields } from './entities/property-ads-buildingfield.entity';
 import { Customers } from '../customer/entities/customer.entity';
 import { Images } from '../customer/entities/images.entity';
 import { CustomerProperty } from '../customer/entities/customer-property.entity';
+import { PaymentDetailsModule } from '../payment_details/payment_details.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CustomerProperty } from '../customer/entities/customer-property.entity'
     MulterModule.register({
       dest: './public',
     }),
+    PaymentDetailsModule,
   ],
   controllers: [PropertyAdsController],
   providers: [

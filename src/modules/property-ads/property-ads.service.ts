@@ -11,6 +11,7 @@ import { Customers } from '../customer/entities/customer.entity';
 import { Images } from '../customer/entities/images.entity';
 import { CustomerProperty } from '../customer/entities/customer-property.entity';
 import * as moment from 'moment';
+import { PaymentDetailsService } from '../payment_details/payment_details.service';
 
 @Injectable()
 export class PropertyAdsService {
@@ -26,8 +27,9 @@ export class PropertyAdsService {
     @InjectRepository(Images) private imagesRepo: Repository<Images>,
     @InjectRepository(CustomerProperty)
     private customer_property_Repo: Repository<CustomerProperty>,
-
     @Inject('BUCKET') private readonly bucket: S3ImageUpload,
+    @Inject(PaymentDetailsService)
+    private readonly paymentUpdate: PaymentDetailsService,
   ) {}
 
   async createProperty(dataa: any, images: any, user: any) {
@@ -312,6 +314,7 @@ export class PropertyAdsService {
                 await this.customer_property_Repo.save(propRes);
               }
               if (y + 1 == allproperty.length) {
+                await this.paymentUpdate.PaymentUpdate(property_Id);
                 return {
                   status: 200,
                   message: 'Create Customer And ADD Property Successfully',
@@ -330,6 +333,7 @@ export class PropertyAdsService {
                 },
               );
               if (y + 1 == enter_this.customers.length) {
+                await this.paymentUpdate.PaymentUpdate(property_Id);
                 return {
                   status: 200,
                   message: 'Create Customer And Update Others Successfully',
