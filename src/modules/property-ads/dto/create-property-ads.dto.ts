@@ -80,6 +80,18 @@ export class CreatePropertyDto {
 
   @ApiProperty({ required: false })
   @IsString()
+  number_of_floor?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  floor_No?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  basement?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
   shop_No?: string;
 
   @ApiProperty({ required: false })
@@ -95,6 +107,7 @@ export class CreatePropertyDto {
     type: 'string',
     format: 'binary',
     description: 'Image file to upload',
+    required: false,
   })
   images: string;
 }

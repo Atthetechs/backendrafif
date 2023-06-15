@@ -3,8 +3,6 @@ import { User } from 'src/modules/user/entities/user.entity';
 import {
   Column,
   Entity,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -54,6 +52,15 @@ export class PropertyAds {
 
   @Column({ nullable: true })
   plot_No: string;
+
+  @Column({ nullable: true })
+  number_of_floor: string;
+
+  @Column({ nullable: true })
+  floor_No: string;
+
+  @Column({ type: 'boolean', default: false })
+  basement: boolean;
 
   @Column({ nullable: true })
   paci_No: string;

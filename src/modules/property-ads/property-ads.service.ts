@@ -34,13 +34,15 @@ export class PropertyAdsService {
 
   async createProperty(dataa: any, images: any, user: any) {
     try {
+      const { basement, ...result } = dataa;
       const response: any = images.length
         ? await this.bucket.upload(images)
         : [];
 
       const data: any = new PropertyAds();
-      Object.keys(dataa).forEach((key) => {
-        data[`${key}`] = dataa[`${key}`];
+      Object.keys(result).forEach((key) => {
+        data[`${key}`] = result[`${key}`];
+        data.basement = JSON.parse(basement);
         data.images = response;
         data.user = user;
       });
@@ -128,7 +130,7 @@ export class PropertyAdsService {
           name: BuildingRole.plot_No,
         },
         {
-          label: { name_en: 'Number Of Floor', name_ar: 'عدد الطوابق' },
+          label: { name_en: 'Number of Floor', name_ar: 'عدد الطوابق' },
           name: BuildingRole.number_of_floor,
         },
       ];
