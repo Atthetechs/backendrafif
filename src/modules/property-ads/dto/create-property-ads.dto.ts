@@ -1,27 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  ArrayMaxSize,
-  ArrayMinSize,
-  IsArray,
-  IsIn,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-} from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export enum BuildingRole {
   Address = 'address',
   Area = 'area',
   PaciNo = 'paci_No',
   plot_No = 'plot_No',
+  building_name = 'building_name',
 }
 
 export enum ShopeRole {
   Area = 'area',
   ShopNo = 'shop_No',
   PaciNo = 'paci_No',
-  Address = 'address',
-  plot_No = 'plot_No',
+  // Address = 'address',
+  // plot_No = 'plot_No',
 }
 
 export enum UserRole {

@@ -105,6 +105,10 @@ export class PropertyAdsService {
     try {
       const building = [
         {
+          label: { name_en: 'Building Name', name_ar: 'اسم المبنى' },
+          name: BuildingRole.building_name,
+        },
+        {
           label: { name_en: 'Address', name_ar: 'عنوان' },
           name: BuildingRole.Address,
         },
@@ -114,8 +118,8 @@ export class PropertyAdsService {
         },
         {
           label: {
-            name_en: 'Area Square meter',
-            name_ar: 'المساحة بالمتر المربع',
+            name_en: 'Area m²',
+            name_ar: 'المساحة م2',
           },
           name: BuildingRole.Area,
         },
@@ -125,29 +129,29 @@ export class PropertyAdsService {
         },
       ];
       const shop = [
-        {
-          label: { name_en: 'Address', name_ar: 'عنوان' },
-          name: ShopeRole.Address,
-        },
-        {
-          label: { name_en: 'PaciNo', name_ar: 'باسين' },
-          name: ShopeRole.PaciNo,
-        },
+        // {
+        //   label: { name_en: 'Address', name_ar: 'عنوان' },
+        //   name: ShopeRole.Address,
+        // },
         {
           label: { name_en: 'Shop No', name_ar: 'رقم المحل' },
           name: ShopeRole.ShopNo,
         },
         {
           label: {
-            name_en: 'Area Square meter',
-            name_ar: 'المساحة بالمتر المربع',
+            name_en: 'Area m²',
+            name_ar: 'المساحة م2',
           },
           name: ShopeRole.Area,
         },
         {
-          label: { name_en: 'Plot No', name_ar: 'القطعة رقم' },
-          name: BuildingRole.plot_No,
+          label: { name_en: 'PaciNo', name_ar: 'باسين' },
+          name: ShopeRole.PaciNo,
         },
+        // {
+        //   label: { name_en: 'Plot No', name_ar: 'القطعة رقم' },
+        //   name: BuildingRole.plot_No,
+        // },
       ];
       const arrayname = [
         {
