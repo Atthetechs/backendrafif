@@ -154,10 +154,10 @@ export class PropertyAdsService {
           label: { name_en: 'PaciNo', name_ar: 'باسين' },
           name: ShopeRole.PaciNo,
         },
-        {
-          label: { name_en: 'Floor No', name_ar: 'رقم الطابق' },
-          name: ShopeRole.floor_no,
-        },
+        // {
+        //   label: { name_en: 'Floor No', name_ar: 'رقم الطابق' },
+        //   name: ShopeRole.floor_no,
+        // },
         // {
         //   label: { name_en: 'Plot No', name_ar: 'القطعة رقم' },
         //   name: BuildingRole.plot_No,

@@ -14,7 +14,7 @@ export enum ShopeRole {
   Area = 'area',
   ShopNo = 'shop_No',
   PaciNo = 'paci_No',
-  floor_no = 'floor_No',
+  // floor_no = 'floor_No',
   // Address = 'address',
   // plot_No = 'plot_No',
 }
