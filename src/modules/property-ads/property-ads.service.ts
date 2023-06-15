@@ -318,7 +318,7 @@ export class PropertyAdsService {
                 await this.customer_property_Repo.save(propRes);
               }
               if (y + 1 == allproperty.length) {
-                await this.paymentUpdate.PaymentUpdate(property_Id);
+                await this.paymentUpdate.PaymentUpdate(id);
                 return {
                   status: 200,
                   message: 'Create Customer And ADD Property Successfully',
@@ -337,7 +337,7 @@ export class PropertyAdsService {
                 },
               );
               if (y + 1 == enter_this.customers.length) {
-                await this.paymentUpdate.PaymentUpdate(property_Id);
+                await this.paymentUpdate.PaymentUpdate(id);
                 return {
                   status: 200,
                   message: 'Create Customer And Update Others Successfully',
