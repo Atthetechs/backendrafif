@@ -7,12 +7,14 @@ export enum BuildingRole {
   PaciNo = 'paci_No',
   plot_No = 'plot_No',
   building_name = 'building_name',
+  number_of_floor = 'number_of_floor',
 }
 
 export enum ShopeRole {
   Area = 'area',
   ShopNo = 'shop_No',
   PaciNo = 'paci_No',
+  floor_no = 'floor_No',
   // Address = 'address',
   // plot_No = 'plot_No',
 }
