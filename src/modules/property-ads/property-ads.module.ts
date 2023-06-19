@@ -12,6 +12,7 @@ import { Customers } from '../customer/entities/customer.entity';
 import { Images } from '../customer/entities/images.entity';
 import { CustomerProperty } from '../customer/entities/customer-property.entity';
 import { PaymentDetailsModule } from '../payment_details/payment_details.module';
+import { PropertyOwnerData } from './entities/property-ads-ownerdata.entity';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { PaymentDetailsModule } from '../payment_details/payment_details.module'
       Customers,
       Images,
       CustomerProperty,
+      PropertyOwnerData,
     ]),
     MulterModule.register({
       dest: './public',

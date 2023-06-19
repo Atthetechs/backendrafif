@@ -12,6 +12,7 @@ import { Images } from '../customer/entities/images.entity';
 import { CustomerProperty } from '../customer/entities/customer-property.entity';
 import * as moment from 'moment';
 import { PaymentDetailsService } from '../payment_details/payment_details.service';
+import { PropertyOwnerData } from './entities/property-ads-ownerdata.entity';
 
 @Injectable()
 export class PropertyAdsService {
@@ -24,6 +25,8 @@ export class PropertyAdsService {
     private buildingRepo: Repository<BuildingFields>,
     @InjectRepository(ShopFields)
     private shopRepo: Repository<ShopFields>,
+    @InjectRepository(PropertyOwnerData)
+    private ownerData: Repository<PropertyOwnerData>,
     @InjectRepository(Images) private imagesRepo: Repository<Images>,
     @InjectRepository(CustomerProperty)
     private customer_property_Repo: Repository<CustomerProperty>,
@@ -360,6 +363,54 @@ export class PropertyAdsService {
         }
       } else {
         return { status: 400, message: 'Main Property Not Found' };
+      }
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async createOwner(owner_data: any, image: any) {
+    try {
+      const ownerImage: any =
+        image != undefined && (await this.bucket.singleImageUpload(image));
+
+      const res = new PropertyOwnerData();
+      Object.keys(owner_data).forEach((key) => {
+        res[`${key}`] = owner_data[`${key}`];
+        res.photo = ownerImage;
+      });
+
+      const save = await this.ownerData.save(res);
+      if (save) {
+        return { statu: 200, message: 'Create Owner Data' };
+      } else {
+        throw new HttpException('Not Created', HttpStatus.BAD_REQUEST);
+      }
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async findOwner() {
+    try {
+      const respo = await this.ownerData.find();
+      if (respo?.length) {
+        return respo;
+      } else {
+        return { status: 400, message: 'Data Not Available' };
+      }
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async deleteOwner(id: number) {
+    try {
+      const res = await this.ownerData.delete(id);
+      if (res.affected) {
+        return { status: 200, message: 'Data Deleted' };
+      } else {
+        return { status: 400, message: 'Not Delete Data' };
       }
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);

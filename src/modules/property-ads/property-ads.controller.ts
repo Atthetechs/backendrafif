@@ -1,23 +1,29 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
   Post,
   Req,
+  UploadedFile,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
   CreateCustomer,
   CreatePropertyDto,
+  OwnerData,
   UpdateProperty,
 } from './dto/create-property-ads.dto';
 import { PropertyAdsService } from './property-ads.service';
@@ -73,5 +79,26 @@ export class PropertyAdsController {
     const data = JSON.parse(JSON.stringify(customerDto));
     const { images, profile_img } = alldata;
     return this.propertyService.createCustomer(+id, data, images, profile_img);
+  }
+
+  @Post('owner-data')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('photo'))
+  async OwnerData(
+    @Body() data: OwnerData,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    const alldata = JSON.parse(JSON.stringify(data));
+    return this.propertyService.createOwner(alldata, image);
+  }
+
+  @Get('find_all_owners')
+  findAll() {
+    return this.propertyService.findOwner();
+  }
+
+  @Delete('owner/:id')
+  Delete(@Param('id') id: number) {
+    return this.propertyService.deleteOwner(id);
   }
 }

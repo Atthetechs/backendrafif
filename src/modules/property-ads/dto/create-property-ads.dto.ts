@@ -24,6 +24,40 @@ export enum UserRole {
   Shop = 'shop',
 }
 
+export class OwnerData {
+  @ApiProperty({ required: false })
+  @IsString()
+  owner_name?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  owner_father_name?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  owner_address?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  owner_company?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  civil_id?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  country?: string;
+
+  @ApiProperty({
+    type: 'string',
+    format: 'binary',
+    description: 'Image file to upload',
+    required: false,
+  })
+  photo?: string;
+}
+
 export class CreatePropertyDto {
   @ApiProperty({ required: false })
   @IsString()
