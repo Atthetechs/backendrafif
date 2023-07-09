@@ -58,6 +58,45 @@ export class OwnerData {
   photo?: string;
 }
 
+export class UpdateOwnerData {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  ownerId: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  owner_name?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  owner_father_name?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  owner_address?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  owner_company?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  civil_id?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  country?: string;
+
+  @ApiProperty({
+    type: 'string',
+    format: 'binary',
+    description: 'Image file to upload',
+    required: false,
+  })
+  photo?: string;
+}
+
 export class CreatePropertyDto {
   @ApiProperty({ required: false })
   @IsString()
@@ -144,6 +183,90 @@ export class CreatePropertyDto {
     required: false,
   })
   images: string;
+}
+
+export class UpdatePropertyDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  propertyId: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  owner_name?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  owner_father_name?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  phoneNumber?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  owner_address?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  owner_company?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  country?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  civil_id?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  propertytype?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  area?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  address?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  building_name?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  number_of_floor?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  floor_No?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  basement?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  shop_No?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  plot_No?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  paci_No?: string;
+
+  @ApiProperty({
+    isArray: true,
+    type: 'string',
+    format: 'binary',
+    description: 'Image file to upload',
+    required: false,
+  })
+  images?: string;
 }
 
 export class UpdateProperty {

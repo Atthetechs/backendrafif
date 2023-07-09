@@ -62,6 +62,27 @@ export class PropertyAdsService {
     }
   }
 
+  async updateProperty(dataa: any, images: any) {
+    try {
+      const { propertyId, basement, ...result } = dataa;
+      const property = await this.propertyRepo.findOne({
+        where: { id: propertyId },
+      });
+      const response: any =
+        images != undefined && images.length
+          ? await this.bucket.upload(images)
+          : property.images;
+
+      const base_ment =
+        basement != undefined ? JSON.parse(basement) : property.basement;
+
+      const updated = { ...result, images: response, basement: base_ment };
+      return this.propertyRepo.save({ ...property, ...updated });
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
   async findAll(name: any, repo: any) {
     try {
       const respo = await repo.find({
@@ -386,6 +407,22 @@ export class PropertyAdsService {
       } else {
         throw new HttpException('Not Created', HttpStatus.BAD_REQUEST);
       }
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async updateOwner(data: any, image: any) {
+    try {
+      const { ownerId, ...result } = data;
+      const owner = await this.ownerData.findOne({ where: { id: ownerId } });
+      const ownerImage: any =
+        image != undefined
+          ? await this.bucket.singleImageUpload(image)
+          : owner.photo;
+
+      const updated = { ...result, photo: ownerImage };
+      return this.ownerData.save({ ...owner, ...updated });
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }

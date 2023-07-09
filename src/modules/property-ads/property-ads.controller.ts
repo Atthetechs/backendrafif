@@ -24,7 +24,9 @@ import {
   CreateCustomer,
   CreatePropertyDto,
   OwnerData,
+  UpdateOwnerData,
   UpdateProperty,
+  UpdatePropertyDto,
 } from './dto/create-property-ads.dto';
 import { PropertyAdsService } from './property-ads.service';
 
@@ -54,14 +56,48 @@ export class PropertyAdsController {
     );
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Patch('update-property')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'images' }]))
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async updateProperty(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Body() propertyDto: UpdatePropertyDto,
+    @Req() req,
+  ) {
+    if (req.user.email == 'admin@nadid.com') {
+      const allImages = JSON.parse(JSON.stringify(files));
+      const { images } = allImages;
+      const main = {};
+      for (let key in propertyDto) {
+        if (
+          propertyDto[key] &&
+          propertyDto[key] != 'string' &&
+          propertyDto[key] != ''
+        ) {
+          Object.assign(main, { [key]: propertyDto[key] });
+        }
+      }
+      return await this.propertyService.updateProperty(main, images);
+    } else {
+      return { status: 400, message: 'Only Admin Can Hit This Api' };
+    }
+  }
+
   @Get('inputField')
   async find() {
     return this.propertyService.find();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch('/addMoreProperty')
-  update(@Body() body: UpdateProperty) {
-    return this.propertyService.update(body);
+  update(@Body() body: UpdateProperty, @Req() req) {
+    if (req.user.email == 'admin@nadid.com') {
+      return this.propertyService.update(body);
+    } else {
+      return { status: 400, message: 'Only Admin Can Hit This Api' };
+    }
   }
 
   @Post('createcustomer/:id')
@@ -90,6 +126,29 @@ export class PropertyAdsController {
   ) {
     const alldata = JSON.parse(JSON.stringify(data));
     return this.propertyService.createOwner(alldata, image);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('update-owner-data')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('photo'))
+  async UpdateOwnerData(
+    @Body() data: UpdateOwnerData,
+    @UploadedFile() image: Express.Multer.File,
+    @Req() req,
+  ) {
+    // const alldata = JSON.parse(JSON.stringify(data));
+    if (req.user.email == 'admin@nadid.com') {
+      const main = {};
+      for (let key in data) {
+        if (data[key] && data[key] != 'string' && data[key] != '') {
+          Object.assign(main, { [key]: data[key] });
+        }
+      }
+      return this.propertyService.updateOwner(main, image);
+    } else {
+      return { status: 400, message: 'Only Admin Can Hit This Api' };
+    }
   }
 
   @Get('find_all_owners')

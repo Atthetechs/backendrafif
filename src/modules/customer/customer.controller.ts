@@ -23,7 +23,6 @@ import {
   CreateCustomerDto,
   CreateNonActiveDto,
   UpdateCustomer,
-  uploadFile,
 } from './dto/create-customer.dto';
 
 @ApiTags('Customer')
@@ -57,7 +56,7 @@ export class CustomerController {
   uplodFile(
     @Param('id') id: number,
     @UploadedFiles() files: Array<Express.Multer.File>,
-    @Body() data: uploadFile,
+    // @Body() data: uploadFile,
   ) {
     const alldata = JSON.parse(JSON.stringify(files));
     const { contractFile } = alldata;
@@ -71,21 +70,30 @@ export class CustomerController {
   update(
     @UploadedFile() files: Express.Multer.File,
     @Body() body: UpdateCustomer,
+    @Req() req,
   ) {
-    const data = JSON.parse(JSON.stringify(body));
-    return this.customerService.updates(data, files);
+    if (req.user.email == 'admin@nadid.com') {
+      const data = JSON.parse(JSON.stringify(body));
+      return this.customerService.updates(data, files);
+    } else {
+      return { status: 400, message: 'Only Admin Can Hit This Api' };
+    }
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch('non-active')
-  NonActive(@Body() data: CreateNonActiveDto) {
-    const { propertyid, active, grace_days, price, created_at } = data;
-    return this.customerService.findAll(
-      propertyid,
-      active,
-      grace_days,
-      price,
-      created_at,
-    );
+  NonActive(@Body() data: CreateNonActiveDto, @Req() req) {
+    if (req.user.email == 'admin@nadid.com') {
+      const { propertyid, active, grace_days, price, created_at } = data;
+      return this.customerService.findAll(
+        propertyid,
+        active,
+        grace_days,
+        price,
+        created_at,
+      );
+    } else {
+      return { status: 400, message: 'Only Admin Can Hit This Api' };
+    }
   }
 }
