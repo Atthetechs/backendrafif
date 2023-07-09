@@ -87,6 +87,29 @@ export class UserService {
     }
   }
 
+  async update(data: any) {
+    try {
+      const { userId, password, ...result } = data;
+      const userExist = await this.userRepo.findOne({
+        where: { id: +userId },
+      });
+      if (userExist) {
+        const hashPassword =
+          password != undefined
+            ? await bcrypt.hash(password, 8)
+            : userExist.password;
+        const updated = { ...result, password: hashPassword };
+        const respo = await this.userRepo.save({ ...userExist, ...updated });
+        delete respo.password;
+        return respo;
+      } else {
+        return { status: 400, message: 'User Not Exist' };
+      }
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
   async contract(id: any) {
     try {
       const response = await this.propertyRepo.findOneBy({ id });

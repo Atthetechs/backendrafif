@@ -22,3 +22,26 @@ export class CreateUserDto {
   @IsString()
   phoneNumber: string;
 }
+
+export class UpdateUserDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  userId: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  email?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  password?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  username?: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  phoneNumber?: string;
+}
