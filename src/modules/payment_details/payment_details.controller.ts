@@ -45,7 +45,7 @@ export class PaymentDetailsController {
   @UseGuards(JwtAuthGuard)
   @Patch('update')
   paymentUpdate(@Body() body: PaymentUpdate, @Req() req) {
-    if (req.user.email == 'admin@nadid.com') {
+    if (req.user.isAdmin) {
       return this.paymentService.update(body);
     } else {
       return { status: 400, message: 'Only Admin Can Hit This Api' };

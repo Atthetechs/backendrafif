@@ -72,7 +72,7 @@ export class CustomerController {
     @Body() body: UpdateCustomer,
     @Req() req,
   ) {
-    if (req.user.email == 'admin@nadid.com') {
+    if (req.user.isAdmin) {
       const data = JSON.parse(JSON.stringify(body));
       return this.customerService.updates(data, files);
     } else {
@@ -83,7 +83,7 @@ export class CustomerController {
   @UseGuards(JwtAuthGuard)
   @Patch('non-active')
   NonActive(@Body() data: CreateNonActiveDto, @Req() req) {
-    if (req.user.email == 'admin@nadid.com') {
+    if (req.user.isAdmin) {
       const { propertyid, active, grace_days, price, created_at } = data;
       return this.customerService.findAll(
         propertyid,

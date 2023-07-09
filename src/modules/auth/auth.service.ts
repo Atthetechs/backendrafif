@@ -33,6 +33,11 @@ export class AuthService {
     const user = await this.userService.findOne(email);
     if (user) {
       delete user.password;
+      if (user.email == 'admin@nadid.com') {
+        Object.assign(user, { isAdmin: true });
+      } else {
+        Object.assign(user, { isAdmin: false });
+      }
       return {
         access_token: this.jwtService.sign(
           { email: email, sub: password },

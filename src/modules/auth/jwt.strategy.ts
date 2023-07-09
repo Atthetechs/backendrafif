@@ -17,6 +17,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: any) {
     const user = await this.userService.findOne(payload.email);
     delete user.password;
+    if (user.email == 'admin@nadid.com') {
+      Object.assign(user, { isAdmin: true });
+    } else {
+      Object.assign(user, { isAdmin: false });
+    }
     return user;
   }
 }

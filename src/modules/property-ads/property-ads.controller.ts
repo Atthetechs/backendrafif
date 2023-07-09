@@ -66,7 +66,7 @@ export class PropertyAdsController {
     @Body() propertyDto: UpdatePropertyDto,
     @Req() req,
   ) {
-    if (req.user.email == 'admin@nadid.com') {
+    if (req.user.isAdmin) {
       const allImages = JSON.parse(JSON.stringify(files));
       const { images } = allImages;
       const main = {};
@@ -93,7 +93,7 @@ export class PropertyAdsController {
   @UseGuards(JwtAuthGuard)
   @Patch('/addMoreProperty')
   update(@Body() body: UpdateProperty, @Req() req) {
-    if (req.user.email == 'admin@nadid.com') {
+    if (req.user.isAdmin) {
       return this.propertyService.update(body);
     } else {
       return { status: 400, message: 'Only Admin Can Hit This Api' };
@@ -138,7 +138,7 @@ export class PropertyAdsController {
     @Req() req,
   ) {
     // const alldata = JSON.parse(JSON.stringify(data));
-    if (req.user.email == 'admin@nadid.com') {
+    if (req.user.isAdmin) {
       const main = {};
       for (let key in data) {
         if (data[key] && data[key] != 'string' && data[key] != '') {
