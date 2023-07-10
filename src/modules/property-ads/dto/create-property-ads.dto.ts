@@ -352,7 +352,7 @@ export class CreateCustomer {
 
   @ApiProperty({ required: false })
   @IsString()
-  created_at?: string;
+  started_at?: string;
 
   @ApiProperty({ required: false })
   @IsString()

@@ -260,7 +260,7 @@ export class CustomerService {
               key == 'price' ? +main['price'] : main[`${key}`];
             created_at.length &&
               created_at != 'string' &&
-              (updateCustomer.contract_date =
+              (updateCustomer.started_at =
                 moment(Currentdate).format('YYYY/MM/DD'));
             updateCustomer.propertyAds = property;
           });

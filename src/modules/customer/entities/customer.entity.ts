@@ -63,7 +63,7 @@ export class Customers {
   created_at: string;
 
   @Column({ nullable: true })
-  contract_date: string;
+  started_at: string;
 
   @Column({ nullable: true })
   expire_date: string;

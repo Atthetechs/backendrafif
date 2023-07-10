@@ -268,7 +268,8 @@ export class PropertyAdsService {
 
   async createCustomer(id: number, data: any, images: any, profileImg: any) {
     try {
-      const { property_Id, grace_days, contract_year, ...result } = data;
+      const { property_Id, grace_days, contract_year, started_at, ...result } =
+        data;
       id && (await this.propertyRepo.update({ id }, { rented: true }));
       const enter_this_property = await this.propertyRepo.findOne({
         where: { id },
@@ -282,10 +283,10 @@ export class PropertyAdsService {
         enter_this_property != undefined ||
         enter_this_property != null
       ) {
-        const Currentdate = new Date(data.created_at);
-        grace_days?.length &&
-          Currentdate.setDate(Currentdate.getDate() + +grace_days);
-        const ExpireDate = new Date(Currentdate);
+        // const Currentdate = new Date(data.created_at);
+        // grace_days?.length &&
+        //   Currentdate.setDate(Currentdate.getDate() + +grace_days);
+        const ExpireDate = new Date(data.created_at);
         contract_year?.length &&
           ExpireDate.setFullYear(ExpireDate.getFullYear() + +contract_year);
 
@@ -302,7 +303,7 @@ export class PropertyAdsService {
             key == 'price' ? parseInt(result[`${key}`]) : result[`${key}`];
           res.profile_img = profilepic;
           res.grace_days = grace_days;
-          res.contract_date = moment(Currentdate).format('YYYY/MM/DD');
+          res.started_at = started_at;
           res.expire_date = moment(ExpireDate).format('YYYY/MM/DD');
           res.propertyAds = enter_this_property;
         });
@@ -335,7 +336,7 @@ export class PropertyAdsService {
                 await this.customerRepo.update(
                   { id: enter_this.customers[x].id },
                   {
-                    contract_date: moment(Currentdate).format('YYYY/MM/DD'),
+                    started_at: started_at,
                     expire_date: moment(ExpireDate).format('YYYY/MM/DD'),
                     created_at: data.created_at,
                     price: data.price,
@@ -364,7 +365,7 @@ export class PropertyAdsService {
               await this.customerRepo.update(
                 { id: enter_this.customers[y].id },
                 {
-                  contract_date: moment(Currentdate).format('YYYY/MM/DD'),
+                  started_at: started_at,
                   expire_date: moment(ExpireDate).format('YYYY/MM/DD'),
                   created_at: data.created_at,
                   price: data.price,
