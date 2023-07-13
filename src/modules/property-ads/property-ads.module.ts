@@ -13,6 +13,7 @@ import { Images } from '../customer/entities/images.entity';
 import { CustomerProperty } from '../customer/entities/customer-property.entity';
 import { PaymentDetailsModule } from '../payment_details/payment_details.module';
 import { PropertyOwnerData } from './entities/property-ads-ownerdata.entity';
+import { Payment } from '../payment_details/entities/payment.entity';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { PropertyOwnerData } from './entities/property-ads-ownerdata.entity';
       BuildingFields,
       Customers,
       Images,
+      Payment,
       CustomerProperty,
       PropertyOwnerData,
     ]),

@@ -13,6 +13,7 @@ import { CustomerProperty } from '../customer/entities/customer-property.entity'
 import * as moment from 'moment';
 import { PaymentDetailsService } from '../payment_details/payment_details.service';
 import { PropertyOwnerData } from './entities/property-ads-ownerdata.entity';
+import { Payment } from '../payment_details/entities/payment.entity';
 
 @Injectable()
 export class PropertyAdsService {
@@ -30,6 +31,8 @@ export class PropertyAdsService {
     @InjectRepository(Images) private imagesRepo: Repository<Images>,
     @InjectRepository(CustomerProperty)
     private customer_property_Repo: Repository<CustomerProperty>,
+    @InjectRepository(Payment)
+    private paymentRepo: Repository<Payment>,
     @Inject('BUCKET') private readonly bucket: S3ImageUpload,
     @Inject(PaymentDetailsService)
     private readonly paymentUpdate: PaymentDetailsService,
@@ -266,10 +269,44 @@ export class PropertyAdsService {
     }
   }
 
+  async defaultPayment(id: any, totalMonths: any) {
+    try {
+      const customerData: any = await this.customerRepo.findOne({
+        where: { id },
+      });
+      for (let x = 0; x < totalMonths; x++) {
+        const createPayment = new Payment();
+        createPayment.payment_type = null;
+        createPayment.un_paid = true;
+        createPayment.rent = null;
+        createPayment.bank_name = null;
+        createPayment.check_no = null;
+        createPayment.link = null;
+        createPayment.link_name = null;
+        createPayment.being_of = null;
+        createPayment.customer = customerData;
+        await this.paymentRepo.save(createPayment);
+      }
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+  async getMonthDifference(startDate: any, endDate: any) {
+    return (
+      endDate.getMonth() -
+      startDate.getMonth() +
+      12 * (endDate.getFullYear() - startDate.getFullYear())
+    );
+  }
+
   async createCustomer(id: number, data: any, images: any, profileImg: any) {
     try {
       const { property_Id, grace_days, contract_year, started_at, ...result } =
         data;
+      const currentDate = new Date();
+      const startDate = new Date(started_at);
+      const totalMonths = await this.getMonthDifference(startDate, currentDate);
+
       id && (await this.propertyRepo.update({ id }, { rented: true }));
       const enter_this_property = await this.propertyRepo.findOne({
         where: { id },
@@ -286,7 +323,7 @@ export class PropertyAdsService {
         // const Currentdate = new Date(data.created_at);
         // grace_days?.length &&
         //   Currentdate.setDate(Currentdate.getDate() + +grace_days);
-        const ExpireDate = new Date(data.created_at);
+        const ExpireDate = new Date(data.started_at);
         contract_year?.length &&
           ExpireDate.setFullYear(ExpireDate.getFullYear() + +contract_year);
 
@@ -338,7 +375,7 @@ export class PropertyAdsService {
                   {
                     started_at: started_at,
                     expire_date: moment(ExpireDate).format('YYYY/MM/DD'),
-                    created_at: data.created_at,
+                    // created_at: data.created_at,
                     price: data.price,
                   },
                 );
@@ -353,6 +390,7 @@ export class PropertyAdsService {
                 await this.customer_property_Repo.save(propRes);
               }
               if (y + 1 == allproperty.length) {
+                await this.defaultPayment(respo.id, totalMonths + 1);
                 await this.paymentUpdate.PaymentUpdate(id);
                 return {
                   status: 200,
@@ -367,11 +405,12 @@ export class PropertyAdsService {
                 {
                   started_at: started_at,
                   expire_date: moment(ExpireDate).format('YYYY/MM/DD'),
-                  created_at: data.created_at,
+                  // created_at: data.created_at,
                   price: data.price,
                 },
               );
               if (y + 1 == enter_this.customers.length) {
+                await this.defaultPayment(respo.id, totalMonths + 1);
                 await this.paymentUpdate.PaymentUpdate(id);
                 return {
                   status: 200,
@@ -381,6 +420,7 @@ export class PropertyAdsService {
             }
           }
         } else {
+          await this.defaultPayment(respo.id, totalMonths + 1);
           return { status: 200, message: 'Create Customer Successfully' };
         }
       } else {
