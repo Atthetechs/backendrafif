@@ -41,6 +41,14 @@ export class PaymentUpdate {
   @IsNotEmpty()
   propert_id: number;
 
+  @ApiProperty({ required: false })
+  @IsString()
+  paymentMonth: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  paymentYear: string;
+
   @ApiProperty({ type: 'number', required: false })
   @IsNumber()
   rent?: number;

@@ -274,29 +274,66 @@ export class PropertyAdsService {
       const customerData: any = await this.customerRepo.findOne({
         where: { id },
       });
-      for (let x = 0; x < totalMonths; x++) {
-        const createPayment = new Payment();
-        createPayment.payment_type = null;
-        createPayment.un_paid = true;
-        createPayment.rent = null;
-        createPayment.bank_name = null;
-        createPayment.check_no = null;
-        createPayment.link = null;
-        createPayment.link_name = null;
-        createPayment.being_of = null;
-        createPayment.customer = customerData;
-        await this.paymentRepo.save(createPayment);
+      if (totalMonths.length > 0) {
+        for (let x = 0; x < totalMonths.length; x++) {
+          const createPayment = new Payment();
+          createPayment.payment_type = null;
+          createPayment.un_paid = true;
+          createPayment.rent = null;
+          createPayment.bank_name = null;
+          createPayment.check_no = null;
+          createPayment.link = null;
+          createPayment.link_name = null;
+          createPayment.being_of = null;
+          createPayment.payment_month = totalMonths[x].payment_month;
+          createPayment.payment_year = totalMonths[x].payment_year;
+          createPayment.customer = customerData;
+          await this.paymentRepo.save(createPayment);
+        }
       }
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
-  async getMonthDifference(startDate: any, endDate: any) {
-    return (
-      endDate.getMonth() -
-      startDate.getMonth() +
-      12 * (endDate.getFullYear() - startDate.getFullYear())
-    );
+  async getMonthDifference(startDate: any, current: any) {
+    let startm = startDate.getMonth() + 1;
+    let starty = startDate.getFullYear();
+    let currenty = current.getFullYear();
+    const month = current.getMonth() + 1;
+
+    let sumMon = [];
+    for (let i = starty; i <= currenty; i++) {
+      let monthlen = 12;
+      if (i == currenty) {
+        for (let x = currenty == starty ? startm : 1; x < month; x++) {
+          sumMon.push({
+            payment_month: moment(x, 'MM').format('MMMM'),
+            payment_year: i,
+          });
+        }
+      } else {
+        for (let x = i == starty ? startm : 1; x <= monthlen; x++) {
+          sumMon.push({
+            payment_month: moment(x, 'MM').format('MMMM'),
+            payment_year: i,
+          });
+        }
+      }
+    }
+    return sumMon;
+
+    // let totalMonth = [];
+    // for (let x = startDate.getMonth() + 1; x < endDate.getMonth() + 1; x++) {
+    //   const getMonth = moment(x, 'MM').format('MMMM');
+    //   totalMonth.push(getMonth);
+    // }
+    // return totalMonth;
+
+    // return (
+    //   endDate.getMonth() -
+    //   startDate.getMonth() +
+    //   12 * (endDate.getFullYear() - startDate.getFullYear())
+    // );
   }
 
   async createCustomer(id: number, data: any, images: any, profileImg: any) {
@@ -311,7 +348,6 @@ export class PropertyAdsService {
       const enter_this_property = await this.propertyRepo.findOne({
         where: { id },
       });
-
       const properties = property_Id && JSON.parse(property_Id);
       const allproperty = properties.length && properties[0];
 
@@ -390,7 +426,7 @@ export class PropertyAdsService {
                 await this.customer_property_Repo.save(propRes);
               }
               if (y + 1 == allproperty.length) {
-                await this.defaultPayment(respo.id, totalMonths + 1);
+                await this.defaultPayment(respo.id, totalMonths);
                 await this.paymentUpdate.PaymentUpdate(id);
                 return {
                   status: 200,
@@ -410,7 +446,7 @@ export class PropertyAdsService {
                 },
               );
               if (y + 1 == enter_this.customers.length) {
-                await this.defaultPayment(respo.id, totalMonths + 1);
+                await this.defaultPayment(respo.id, totalMonths);
                 await this.paymentUpdate.PaymentUpdate(id);
                 return {
                   status: 200,
@@ -420,7 +456,7 @@ export class PropertyAdsService {
             }
           }
         } else {
-          await this.defaultPayment(respo.id, totalMonths + 1);
+          await this.defaultPayment(respo.id, totalMonths);
           return { status: 200, message: 'Create Customer Successfully' };
         }
       } else {

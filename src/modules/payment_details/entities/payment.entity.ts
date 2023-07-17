@@ -39,6 +39,12 @@ export class Payment {
   @Column({ nullable: true })
   being_of: string;
 
+  @Column({ nullable: true })
+  payment_month: string;
+
+  @Column({ nullable: true })
+  payment_year: string;
+
   @CreateDateColumn()
   created_date: Date;
 
