@@ -377,7 +377,6 @@ export class PropertyAdsService {
           res.profile_img = profilepic;
           res.grace_days = grace_days;
           res.started_at = started_at;
-          res.created_at = data.created_at;
           res.expire_date = moment(ExpireDate).format('YYYY/MM/DD');
           res.propertyAds = enter_this_property;
         });
