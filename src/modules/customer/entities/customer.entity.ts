@@ -59,8 +59,8 @@ export class Customers {
   @Column({ nullable: true })
   paci_No: string;
 
-  // @Column({ nullable: true })
-  // created_at: string;
+  @Column({ nullable: true })
+  created_at: string;
 
   @Column({ nullable: true })
   started_at: string;

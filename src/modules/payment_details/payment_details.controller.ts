@@ -42,13 +42,12 @@ export class PaymentDetailsController {
   //   link: 'string'
   // }
 
-  @UseGuards(JwtAuthGuard)
   @Patch('update')
-  paymentUpdate(@Body() body: PaymentUpdate, @Req() req) {
-    if (req.user.isAdmin) {
-      return this.paymentService.update(body);
-    } else {
-      return { status: 400, message: 'Only Admin Can Hit This Api' };
-    }
+  paymentUpdate(@Body() body: PaymentUpdate) {
+    // if (req.user.isAdmin) {
+    return this.paymentService.update(body);
+    // } else {
+    // return { status: 400, message: 'Only Admin Can Hit This Api' };
+    // }
   }
 }
