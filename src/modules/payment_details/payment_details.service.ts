@@ -92,13 +92,14 @@ export class PaymentDetailsService {
     }
   }
 
-  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
   async PaymentCheck() {
     try {
       const res = await this.propertyRepo.find();
       for (let i in res) {
         await this.PaymentUpdate(res[i].id);
       }
+
+			return "Payments checked successfully";
     } catch (err) {
       console.log(err);
     }

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class CreateNonActiveDto {
   @ApiProperty()
@@ -141,6 +141,18 @@ export class UpdateCustomer {
 
   @ApiProperty({ required: false })
   price?: number;
+
+  @ApiProperty({ required: false })
+	@IsOptional()
+	@Min(0)
+	@IsNumber()
+  advance_balance?: number;
+
+  @ApiProperty({ required: false })
+	@IsOptional()
+	@Max(0)
+	@IsNumber()
+  remaining_balnce?: number;
 
   @ApiProperty({ required: false })
   @IsString()

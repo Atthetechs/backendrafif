@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { PaymentDetailsService } from './payment_details.service';
 import { PaymentDTO, PaymentUpdate } from './dto/payment.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -16,6 +16,11 @@ export class PaymentDetailsController {
   //     return this.paymentService.checkDate(id);
   //   }
   // }
+
+	@Get('check')
+  paymentCheck() {
+    return this.paymentService.PaymentCheck();
+  }
 
   @Post('create')
   // @UsePipes(new ValidationPipe({ transform: true }))
