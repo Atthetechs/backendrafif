@@ -97,7 +97,7 @@ export class CustomerService {
         const res: any = new Customers();
         Object.keys(result).forEach((key) => {
           res[`${key}`] =
-            key == 'price' ? parseInt(result[`${key}`]) : result[`${key}`];
+					['price', 'remaining_balnce', 'advance_balance'].includes(key) ? parseInt(result[`${key}`]) : result[`${key}`];
           res.profile_img = profilepic;
           res.grace_days = grace_days;
           res.contract_date = moment(Currentdate).format('YYYY/MM/DD');

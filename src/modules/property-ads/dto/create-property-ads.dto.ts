@@ -350,6 +350,12 @@ export class CreateCustomer {
   @IsString()
   paci_No?: string;
 
+	@ApiProperty({ required: false })
+  advance_balance?: number;
+
+  @ApiProperty({ required: false })
+  remaining_balnce?: number;
+
   @ApiProperty({ required: false })
   @IsString()
   started_at?: string;

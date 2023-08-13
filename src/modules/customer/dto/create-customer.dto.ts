@@ -143,15 +143,9 @@ export class UpdateCustomer {
   price?: number;
 
   @ApiProperty({ required: false })
-	@IsOptional()
-	@Min(0)
-	@IsNumber()
   advance_balance?: number;
 
   @ApiProperty({ required: false })
-	@IsOptional()
-	@Max(0)
-	@IsNumber()
   remaining_balnce?: number;
 
   @ApiProperty({ required: false })

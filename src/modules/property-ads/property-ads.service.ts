@@ -373,7 +373,7 @@ export class PropertyAdsService {
 
         Object.keys(result).forEach((key) => {
           res[`${key}`] =
-            key == 'price' ? parseInt(result[`${key}`]) : result[`${key}`];
+            ['price', 'remaining_balnce', 'advance_balance'].includes(key) ? parseInt(result[`${key}`]) : result[`${key}`];
           res.profile_img = profilepic;
           res.grace_days = grace_days;
           res.started_at = started_at;
