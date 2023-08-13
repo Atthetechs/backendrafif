@@ -367,18 +367,43 @@ export class PaymentDetailsService {
 
   async customerUpdate(balnce: any, id: number) {
     try {
+			const customerData = await this.customerRepo.findOne({
+				where: { id },
+			});
+
+			let remaining_balnce = customerData.remaining_balnce;
+			let advance_balance = customerData.advance_balance;
+
       if (balnce < 0) {
+				if ( advance_balance > 0) {
+					if(advance_balance >= Math.abs(balnce)){
+						advance_balance -= Math.abs(balnce);
+						balnce = 0
+					} else {
+						balnce += advance_balance;
+						advance_balance = 0;
+					}
+				}
         await this.customerRepo
           .createQueryBuilder('customers')
           .update()
-          .set({ remaining_balnce: balnce, advance_balance: 0 })
+          .set({ remaining_balnce: customerData.remaining_balnce + balnce, advance_balance })
           .where('id = :id', { id: id })
           .execute();
-      } else {
+      } else if( balnce > 0) {
+				if ( remaining_balnce < 0) {
+					if(balnce >= Math.abs(remaining_balnce)){
+							balnce -= Math.abs(remaining_balnce);
+							remaining_balnce = 0
+					} else {
+						remaining_balnce += balnce;
+						balnce = 0;
+					}
+				}
         await this.customerRepo
           .createQueryBuilder('customers')
           .update()
-          .set({ advance_balance: balnce, remaining_balnce: 0 })
+          .set({ advance_balance: customerData.advance_balance + balnce, remaining_balnce })
           .where('id = :id', { id: id })
           .execute();
       }
